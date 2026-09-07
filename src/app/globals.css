@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ tokens */
+@theme {
+  --color-ink: #08090c;
+  --color-surface: #101218;
+  --color-elevated: #151821;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+  --color-fg: #f5f7fa;
+  --color-muted: #9298a6;
+  --color-faint: #6a707d;
+
+  --color-lime: #c7f36b;
+  --color-lime-dim: #a8d94a;
+  --color-lime-ink: #0b1003;
+
+  --color-yes: #4ade80;
+  --color-no: #f87171;
+  --color-hedge: #fbbf24;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  --radius-card: 14px;
+}
+
+/* ------------------------------------------------------------------- base */
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Editorial headline treatment: tight tracking, no gradient text. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.032em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lime);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-lime-ink);
+  }
+
+  ::placeholder {
+    color: var(--color-faint);
+  }
+}
+
+/* ------------------------------------------------------------- components */
+@layer components {
+  /* Fine top highlight that reads as light catching an edge. */
+  .edge-lit {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 20px 50px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Faint grid used behind the hero. Not a glow, not a blob. */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 20%, transparent 75%);
+  }
+
+  /* Fade both edges so pills dissolve rather than being sliced off. The fade
+     is a fixed width, not a percentage, so it reads the same on a phone as on
+     a wide desktop. */
+  .rail-mask {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 44px,
+      #000 calc(100% - 44px),
+      transparent
+    );
+  }
+}
+
+/* ------------------------------------------------------------- animations */
+
+/*
+ * Entrances are CSS rather than a JS animation library on purpose: the markup
+ * is identical on the server and after hydration (no `useReducedMotion()`
+ * branch to mismatch), the content still appears if JavaScript never runs, and
+ * the reduced-motion block at the bottom of this file governs all of it.
+ */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise-in {
+  animation: rise-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translate3d(-6px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s ease-out both;
+}
+
+/* The bar's final width is inline; scaleX animates the reveal so no layout
+   thrash and no JS is involved. */
+@keyframes bar-reveal {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-bar-reveal {
+  transform-origin: left center;
+  animation: bar-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@keyframes rail-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes rail-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-rail-left {
+  animation: rail-left var(--rail-duration, 70s) linear infinite;
+}
+
+.animate-rail-right {
+  animation: rail-right var(--rail-duration, 70s) linear infinite;
+}
+
+.rail-track:hover,
+.rail-track:focus-within {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Rails become ordinary horizontally scrollable lists. */
+  .animate-rail-left,
+  .animate-rail-right {
+    animation: none !important;
+    transform: none !important;
+  }
+}
