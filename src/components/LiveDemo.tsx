@@ -32,41 +32,42 @@ export function LiveDemo({ questions }: { questions: TrendingEvent[] }) {
         </div>
 
         {running === null ? (
-          <div className="mt-12 sm:mt-16">
-            <p className="eyebrow">Choose a question</p>
-            <ul className="mt-5">
-              {questions.map((event) => (
-                <li key={event.id}>
-                  <button
-                    type="button"
-                    onClick={() => setRunning(event.question)}
-                    className="group flex w-full items-center gap-5 border-t border-line py-6 text-left transition-[padding] duration-300 hover:pl-2"
-                  >
-                    <span className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-lime/70">
-                      {event.topic}
-                    </span>
+          <ul className="mt-12 sm:mt-16">
+            {questions.map((event) => (
+              <li key={event.id}>
+                <button
+                  type="button"
+                  onClick={() => setRunning(event.question)}
+                  className="group flex w-full flex-col gap-6 border-t border-line py-10 text-left sm:flex-row sm:items-center sm:justify-between sm:gap-10"
+                >
+                  <span className="min-w-0">
+                    <span className="eyebrow block">{event.topic}</span>
                     <span
-                      className="min-w-0 flex-1 font-medium leading-snug transition-colors duration-300 group-hover:text-lime"
-                      style={{ fontSize: "var(--text-h3)" }}
+                      className="mt-3 block font-semibold leading-[1.05] tracking-[-0.035em] transition-colors duration-300 group-hover:text-lime"
+                      style={{ fontSize: "var(--text-h2)" }}
                     >
                       {event.question}
                     </span>
-                    <span
-                      className={cn(
-                        "hidden shrink-0 items-center gap-2 rounded-full border border-line-strong px-4 py-2",
-                        "text-[13px] font-medium transition-colors duration-300",
-                        "group-hover:border-lime/40 group-hover:bg-lime/[0.06] group-hover:text-lime sm:inline-flex",
-                      )}
-                    >
-                      Investigate
-                      <ArrowRight className="size-3.5" aria-hidden />
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <div className="border-t border-line" />
-          </div>
+                  </span>
+
+                  <span
+                    className={cn(
+                      "inline-flex shrink-0 items-center gap-2.5 rounded-full bg-lime px-6 py-3.5",
+                      "text-[15px] font-medium text-lime-ink transition-all duration-200",
+                      "group-hover:bg-lime-dim group-active:scale-[0.97]",
+                    )}
+                  >
+                    Investigate
+                    <ArrowRight
+                      className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+                      aria-hidden
+                    />
+                  </span>
+                </button>
+              </li>
+            ))}
+            <li className="border-t border-line" aria-hidden />
+          </ul>
         ) : (
           <div className="mt-12 sm:mt-16">
             <button
@@ -74,7 +75,7 @@ export function LiveDemo({ questions }: { questions: TrendingEvent[] }) {
               onClick={() => setRunning(null)}
               className="eyebrow mb-8 transition-colors hover:text-fg"
             >
-              ← Choose another question
+              ← Ask something else
             </button>
             {/* Keyed so picking a different question starts a clean run. */}
             <PredictFlow key={running} initialQuestion={running} />

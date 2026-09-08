@@ -7,7 +7,7 @@ import { QuestionInput } from "./QuestionInput";
 import { PredictionLoading } from "./PredictionLoading";
 import { PredictionResult } from "./PredictionResult";
 import { TrendingTicker } from "./TrendingTicker";
-import { getTrendingRails } from "@/lib/trending";
+import { getTrendingEvents } from "@/lib/trending";
 import type { ForecastErrorCode, ForecastResult, ForecastStreamEvent, Stage } from "@/lib/types";
 
 type FlowState =
@@ -162,8 +162,8 @@ export function PredictFlow({ initialQuestion }: { initialQuestion?: string }) {
 }
 
 function IdleState({ onSubmit, seed }: { onSubmit: (question: string) => void; seed?: string }) {
-  const [railOne, railTwo] = getTrendingRails();
-  const examples = railOne.slice(0, 5).map((event) => event.question);
+  const radar = getTrendingEvents().slice(0, 8);
+  const examples = radar.slice(0, 5).map((event) => event.question);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -184,10 +184,12 @@ function IdleState({ onSubmit, seed }: { onSubmit: (question: string) => void; s
         size="hero"
       />
 
-      <div className="mt-12 space-y-2.5">
-        <p className="text-xs uppercase tracking-widest text-faint">Worth predicting</p>
-        <TrendingTicker events={railOne} direction="left" durationSeconds={130} />
-        <TrendingTicker events={railTwo} direction="right" durationSeconds={155} />
+      {/* One rail here too — the same discovery mechanism as the landing page. */}
+      <div className="mt-12 space-y-3">
+        <p className="eyebrow">On the radar</p>
+        <div className="-mx-4 border-y border-line sm:-mx-6">
+          <TrendingTicker events={radar} direction="left" durationSeconds={95} />
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 /**
- * The closing invitation.
+ * The closing invitation, pointing straight back at the input.
  *
  * Deliberately not wrapped in a scroll reveal: this is the page's primary
  * conversion element and must be painted whether or not an
@@ -10,18 +10,18 @@ import { ArrowRight } from "lucide-react";
  */
 export function FinalCta() {
   return (
-    <section className="grain relative overflow-hidden border-b border-line">
-      <div className="container-wide relative py-28 sm:py-44">
+    <section className="grain relative overflow-hidden border-t border-line">
+      <div className="container-wide relative py-20 sm:py-28">
         <h2
-          className="max-w-[13ch] font-semibold leading-[0.88]"
+          className="font-semibold leading-[0.95] tracking-[-0.045em]"
           style={{ fontSize: "var(--text-h1)" }}
         >
-          What do you think happens next?
+          What happens next?
         </h2>
 
         <Link
           href="/predict"
-          className="group mt-12 inline-flex items-center gap-3 rounded-full bg-lime px-8 py-4 text-[15px] font-medium text-lime-ink transition-all duration-200 hover:bg-lime-dim active:scale-[0.97] sm:mt-16"
+          className="group mt-9 inline-flex items-center gap-3 rounded-full bg-lime px-7 py-3.5 text-[15px] font-medium text-lime-ink transition-all duration-200 hover:bg-lime-dim active:scale-[0.97]"
         >
           Ask Predictly
           <ArrowRight

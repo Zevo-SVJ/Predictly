@@ -42,17 +42,19 @@ export function TrendingTicker({
               <button
                 type="button"
                 tabIndex={duplicate ? -1 : undefined}
+                aria-label={`${event.topic}: ${event.question}`}
                 onClick={() => {
                   track("trending_event_clicked", { id: event.id, category: event.category });
                   router.push(`/predict?q=${encodeURIComponent(event.question)}&from=${event.id}`);
                 }}
-                className="group flex h-full items-center gap-4 whitespace-nowrap border-r border-line px-7 py-4 text-left transition-colors duration-300 hover:bg-surface"
+                title={event.question}
+                className="group flex h-full items-center whitespace-nowrap border-r border-line px-8 py-4 transition-colors duration-300 hover:bg-surface"
               >
-                <span className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-lime/70 transition-colors group-hover:text-lime">
+                {/* Topic only. The full questions live in the input and the
+                    category field; repeating them here is the third time a
+                    visitor reads the same list. */}
+                <span className="text-[15px] font-medium uppercase tracking-[0.14em] text-muted transition-colors duration-300 group-hover:text-lime">
                   {event.topic}
-                </span>
-                <span className="text-[15px] text-muted transition-colors group-hover:text-fg">
-                  {event.shortTitle}
                 </span>
               </button>
             </li>

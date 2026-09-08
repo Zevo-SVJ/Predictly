@@ -92,26 +92,37 @@ stale posts is not. Confidence is capped at medium when the evidence is old.
 
 ## The homepage
 
-Composed as a narrative rather than a stack of feature cards: display type,
-then a ticker, then a dense feed, then two interactive sections, then the brand
-statement — each section a different composition so the page has rhythm.
+Six sections, each earning its place. The page is roughly half its previous
+height because the redundant example sections are gone, not because content was
+thinned.
 
 | Section | What it is |
 | --- | --- |
-| Hero | Display headline, the real input, and a 0–100 rule. No badge, no mock UI. |
-| Ticker | Two counter-scrolling newswire rails of open questions. |
-| What's worth predicting | Editorial feed. Shows a **real** probability when one exists in the database, "Not yet forecast" otherwise. |
-| Not a guess | Toggling evidence re-runs the actual `calculateProbability` in the browser. |
-| Ask. We'll investigate | Runs the real `POST /api/predict` on the landing page. |
-| The future is uncertain | Brand statement. |
-| Anything with a date on it | Category wall, set at heading scale. |
+| Hero | Display headline, the real input, a 0–100 rule. One example at a time, cycling through the placeholder. |
+| On the radar | One ticker, topic labels only. |
+| What can you predict? | Breadth as a single composition — a constellation on desktop, a thumb-driven strip on mobile. |
+| Ask. We'll investigate | The page's one product demonstration. Runs the real `POST /api/predict`. |
+| Current information | The one explanatory section. |
+| What happens next? | Closing CTA back to the input. |
 
-The two interactive sections are the marketing: rather than describing the
-method, the page runs it.
+**One example at a time** is enforced throughout: the hero cycles a single
+placeholder, the radar shows topics rather than questions, the category field
+reveals only the active subject's question, and the demo offers one question.
 
-`Reveal` is an IntersectionObserver toggling a data attribute, with the hidden
-state and transition in CSS — no animation library, and a `<noscript>` rule
-forces every reveal visible when scripting is off.
+### Brand marks
+
+`src/lib/categories/` models each subject with an optional `asset` field.
+**No asset is currently set on any mark**, so every one renders as its name in
+type via `BrandMark`. Two reasons: this environment has no access to the
+official brand resources these would have to come from, and hand-drawing
+substitutes would be both an approximation of a protected mark and a
+fabrication. The typographic form is the permitted neutral representation, not
+a placeholder.
+
+To add a cleared mark: confirm the trademark owner's terms permit the use, put
+the official file in `/public/brands/`, and set `asset` and `officialUrl` on
+that entry. `BrandMark` picks it up with no component change. Bitcoin carries a
+glyph because ₿ is a Unicode currency character (U+20BF) and free to use.
 
 ## Trending predictions
 

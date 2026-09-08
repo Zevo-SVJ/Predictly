@@ -1,41 +1,35 @@
-import { CategoryWall } from "@/components/CategoryWall";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
-import { FutureFeed } from "@/components/FutureFeed";
 import { Hero } from "@/components/Hero";
 import { LandingViewTracker } from "@/components/LandingViewTracker";
 import { LiveDemo } from "@/components/LiveDemo";
 import { Navbar } from "@/components/Navbar";
-import { NotAGuess } from "@/components/NotAGuess";
-import { Statement } from "@/components/Statement";
-import { TrendingSection } from "@/components/TrendingSection";
+import { OnTheRadar } from "@/components/OnTheRadar";
+import { PredictField } from "@/components/PredictField";
+import { TrustStrip } from "@/components/TrustStrip";
 import { SITE } from "@/lib/config";
 import { getTrendingEvents } from "@/lib/trending";
 
-/**
- * Statically rendered for LCP, regenerated every five minutes so the discovery
- * feed picks up forecasts made since the last build. When Supabase is
- * configured the store reads cookies, which makes the route dynamic anyway.
- */
 export const revalidate = 300;
 
 export const metadata = {
   title: `${SITE.name} — Predict what happens next.`,
-  description: SITE.description,
+  description:
+    "Ask about a future event. Predictly researches what's happening now and turns the evidence into a forecast.",
   alternates: { canonical: "/" },
 };
 
 /**
- * The homepage narrative: a claim, the questions people are asking, what is
- * worth predicting, proof the number is earned, the product itself, the brand
- * statement, the breadth, and the invitation.
+ * Six sections, each earning its place.
  *
- * Each section is composed differently on purpose — display type, then a
- * ticker, then a dense feed, then an interactive split, then the live product —
- * so the page has rhythm instead of a repeating card motif.
+ * Hero states the offer and hands over the product. The radar is the only
+ * discovery rail. The field shows breadth as one composition. The demo runs the
+ * real backend once — the page's single product demonstration. Then one compact
+ * explanation and the invitation back to the input.
  */
 export default function HomePage() {
-  const demoQuestions = getTrendingEvents().slice(0, 3);
+  // A single question for the live demo: one prominent example at a time.
+  const demoQuestion = getTrendingEvents().slice(0, 1);
 
   return (
     <>
@@ -44,12 +38,10 @@ export default function HomePage() {
 
       <main id="main">
         <Hero />
-        <TrendingSection />
-        <FutureFeed />
-        <NotAGuess />
-        <LiveDemo questions={demoQuestions} />
-        <Statement />
-        <CategoryWall />
+        <OnTheRadar />
+        <PredictField />
+        <LiveDemo questions={demoQuestion} />
+        <TrustStrip />
         <FinalCta />
       </main>
 
