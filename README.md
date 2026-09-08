@@ -90,12 +90,37 @@ stale posts is not. Confidence is capped at medium when the evidence is old.
 | `POST /api/predictions/[id]/claim` | Attaches an anonymous forecast to an account. |
 | `POST /api/admin/predictions/[id]/resolve` | Manual resolution, secret-gated. |
 
+## The homepage
+
+Composed as a narrative rather than a stack of feature cards: display type,
+then a ticker, then a dense feed, then two interactive sections, then the brand
+statement — each section a different composition so the page has rhythm.
+
+| Section | What it is |
+| --- | --- |
+| Hero | Display headline, the real input, and a 0–100 rule. No badge, no mock UI. |
+| Ticker | Two counter-scrolling newswire rails of open questions. |
+| What's worth predicting | Editorial feed. Shows a **real** probability when one exists in the database, "Not yet forecast" otherwise. |
+| Not a guess | Toggling evidence re-runs the actual `calculateProbability` in the browser. |
+| Ask. We'll investigate | Runs the real `POST /api/predict` on the landing page. |
+| The future is uncertain | Brand statement. |
+| Anything with a date on it | Category wall, set at heading scale. |
+
+The two interactive sections are the marketing: rather than describing the
+method, the page runs it.
+
+`Reveal` is an IntersectionObserver toggling a data attribute, with the hidden
+state and transition in CSS — no animation library, and a `<noscript>` rule
+forces every reveal visible when scripting is off.
+
 ## Trending predictions
 
 `src/lib/trending/` holds a `TrendingEventsProvider` behind a curated seed set.
-Entries carry `publishedAt` / `expiresAt` and are filtered once they expire, so
-the list decays instead of going quietly stale. The UI says "Trending
-predictions", never "live" — swapping in a live provider is one file.
+Entries carry `topic`, `eventDate`, `publishedAt` and `expiresAt`, and expire on
+their own so the list decays instead of going quietly stale. `priority` is an
+editorial ordering weight and is never shown as a measured trend score. The UI
+says "curated", never "live" — swapping in a news, fixtures or
+most-asked-internally provider is one file.
 
 ## Product decisions
 
@@ -103,6 +128,10 @@ predictions", never "live" — swapping in a live provider is one file.
   future billing layer would read. No Stripe, no tiers, no pricing UI.
 - **No fake product imagery.** The landing page has no mock dashboard and no
   example forecast card. The hero's only graphic is a 0–100 probability rule.
+- **No invented numbers anywhere.** The discovery feed shows a real forecast or
+  says there isn't one; the interactive section describes kinds of evidence
+  rather than inventing headlines, outlets, dates or URLs, and is labelled
+  illustrative.
 - **No fabricated evidence, ever.** Missing credentials produce a configuration
   error; failed research produces an honest failure state.
 

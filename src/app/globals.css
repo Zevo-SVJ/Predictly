@@ -1,20 +1,31 @@
 @import "tailwindcss";
 
-/* ------------------------------------------------------------------ tokens */
+/* ============================================================== DESIGN SYSTEM
+ * Dark editorial forecasting. One place for every token: colour, type scale,
+ * container widths, section rhythm, radii and motion.
+ * ========================================================================= */
 @theme {
+  /* --- surfaces, four steps of depth --- */
   --color-ink: #08090c;
-  --color-surface: #101218;
-  --color-elevated: #151821;
+  --color-surface: #0d0f13;
+  --color-raised: #11141a;
+  --color-elevated: #151922;
+
+  /* --- text --- */
+  --color-fg: #f5f7fa;
+  --color-muted: #8d94a3;
+  --color-faint: #666d7c;
+
+  /* --- lines --- */
   --color-line: rgba(255, 255, 255, 0.08);
   --color-line-strong: rgba(255, 255, 255, 0.14);
-  --color-fg: #f5f7fa;
-  --color-muted: #9298a6;
-  --color-faint: #6b7180;
 
+  /* --- accent. Means: active, probability, confidence, primary action. --- */
   --color-lime: #c7f36b;
   --color-lime-dim: #b2e04f;
   --color-lime-ink: #0b1003;
 
+  /* --- semantics, used only where they carry meaning --- */
   --color-yes: #5ddc94;
   --color-no: #f2777a;
   --color-hedge: #e8b84b;
@@ -22,9 +33,36 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  /* --- type scale. Fluid, so the page is composed for the viewport it's on
+         rather than being a phone layout stretched wide. --- */
+  --text-display: clamp(3.4rem, 10.5vw, 9rem);
+  --text-h1: clamp(2.6rem, 7vw, 5.5rem);
+  --text-h2: clamp(2.1rem, 5vw, 4rem);
+  --text-h3: clamp(1.35rem, 2.2vw, 1.9rem);
+  --text-lead: clamp(1.05rem, 1.5vw, 1.3rem);
+  --text-figure: clamp(3rem, 9vw, 7.5rem);
+
+  /* --- container widths --- */
+  --w-bleed: 100%;
+  --w-wide: 1560px;
+  --w-content: 1200px;
+  --w-text: 62ch;
+
+  /* --- vertical rhythm ---
+     Tuned against stacking: adjacent sections each contribute this, so the
+     boundary gap is double. Larger than this reads as a hole, not as breathing
+     room. --- */
+  --space-section: clamp(4rem, 6.5vw, 7rem);
+
+  /* --- motion --- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 180ms;
+  --dur-base: 340ms;
+  --dur-slow: 640ms;
 }
 
-/* ------------------------------------------------------------------- base */
+/* ==================================================================== BASE */
 @layer base {
   * {
     border-color: var(--color-line);
@@ -46,11 +84,10 @@
     overflow-x: hidden;
   }
 
-  /* Editorial headline treatment: tight tracking, optical balance, no gradients. */
   h1,
   h2,
   h3 {
-    letter-spacing: -0.035em;
+    letter-spacing: -0.04em;
     text-wrap: balance;
   }
 
@@ -74,52 +111,116 @@
   }
 }
 
-/* ------------------------------------------------------------- components */
+/* ============================================================== COMPONENTS */
 @layer components {
-  /* Fine top highlight — light catching a physical edge, not a glow. */
+  .container-wide {
+    width: 100%;
+    max-width: var(--w-wide);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  .container-content {
+    width: 100%;
+    max-width: var(--w-content);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-wide,
+    .container-content {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .section-y {
+    padding-block: var(--space-section);
+  }
+
+  /* Fine top highlight — light catching a physical edge, never a glow. */
   .edge-lit {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.07),
-      0 24px 60px -40px rgba(0, 0, 0, 0.95);
+      0 30px 80px -50px rgba(0, 0, 0, 0.95);
   }
 
   /*
    * Probability rule: the recurring brand motif. A measuring scale from 0 to
-   * 100, drawn in hairlines. Native to forecasting, and honest — it is a ruler,
-   * not a screenshot of a product that doesn't exist.
+   * 100 drawn in hairlines — native to forecasting, and honest, because it is a
+   * ruler rather than a screenshot of a product that doesn't exist.
    */
   .tick-rule {
     background-image: repeating-linear-gradient(
       to right,
-      rgba(255, 255, 255, 0.16) 0 1px,
+      rgba(255, 255, 255, 0.18) 0 1px,
       transparent 1px 100%
     );
-    background-size: calc(100% / 40) 100%;
+    background-size: calc(100% / 48) 100%;
+  }
+
+  /*
+   * Film grain. A single tiny SVG turbulence tile, so it costs one data URI
+   * and no JS. Kept near-invisible: it removes the flatness of large dark
+   * fields without ever reading as an effect.
+   */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.032;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   .rail-mask {
     mask-image: linear-gradient(
       to right,
       transparent,
-      #000 56px,
-      #000 calc(100% - 56px),
+      #000 64px,
+      #000 calc(100% - 64px),
       transparent
     );
   }
+
+  /*
+   * Scroll reveal. Paired with `Reveal.tsx`, which flips `data-shown` from an
+   * IntersectionObserver, and with the <noscript> rule in the root layout.
+   */
+  [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+    transition:
+      opacity var(--dur-slow) var(--ease-out-expo),
+      transform var(--dur-slow) var(--ease-out-expo);
+  }
+
+  [data-reveal][data-shown="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Small uppercase metadata used throughout for labels and eyebrows. */
+  .eyebrow {
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
 }
 
-/* ------------------------------------------------------------- animations */
+/* ============================================================== ANIMATIONS */
 
 /*
  * Entrances on content that must survive without JavaScript are CSS, so the
- * markup is identical on the server and after hydration and the text is
- * readable even if hydration never happens. Framer Motion is reserved for
- * scroll-linked and interaction motion, where JS is a precondition anyway.
+ * markup is identical on server and client and the text is readable even if
+ * hydration never happens. Framer Motion is reserved for scroll-linked and
+ * interaction motion, where JS is a precondition anyway.
  */
 @keyframes rise-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 14px, 0);
   }
   to {
     opacity: 1;
@@ -128,7 +229,7 @@
 }
 
 .animate-rise-in {
-  animation: rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: rise-in var(--dur-slow) var(--ease-out-expo) both;
 }
 
 @keyframes slide-in {
@@ -158,7 +259,36 @@
 
 .animate-bar-reveal {
   transform-origin: left center;
-  animation: bar-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  animation: bar-reveal 0.8s var(--ease-out-expo) 0.15s both;
+}
+
+/* A slow data trace drifting behind the hero. One transform, GPU-composited. */
+@keyframes trace-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-trace {
+  animation: trace-drift 90s linear infinite;
+}
+
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-caret {
+  animation: caret-blink 1.1s steps(1) infinite;
 }
 
 @keyframes rail-left {
@@ -205,10 +335,23 @@
     transition-duration: 0.01ms !important;
   }
 
-  /* Rails become ordinary horizontally scrollable lists. */
+  /* Continuous motion stops entirely; rails become scrollable lists. */
   .animate-rail-left,
-  .animate-rail-right {
+  .animate-rail-right,
+  .animate-trace {
     animation: none !important;
     transform: none !important;
+  }
+
+  .animate-caret {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  /* Reveals are shown outright rather than transitioned into place. */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }

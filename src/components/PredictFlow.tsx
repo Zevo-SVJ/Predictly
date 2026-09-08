@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics";
 import { PredictionError } from "./PredictionError";
-import { PredictionInput } from "./PredictionInput";
+import { QuestionInput } from "./QuestionInput";
 import { PredictionLoading } from "./PredictionLoading";
 import { PredictionResult } from "./PredictionResult";
-import { TrendingRail } from "./TrendingRail";
+import { TrendingTicker } from "./TrendingTicker";
 import { getTrendingRails } from "@/lib/trending";
 import type { ForecastErrorCode, ForecastResult, ForecastStreamEvent, Stage } from "@/lib/types";
 
@@ -163,6 +163,7 @@ export function PredictFlow({ initialQuestion }: { initialQuestion?: string }) {
 
 function IdleState({ onSubmit, seed }: { onSubmit: (question: string) => void; seed?: string }) {
   const [railOne, railTwo] = getTrendingRails();
+  const examples = railOne.slice(0, 5).map((event) => event.question);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -174,12 +175,19 @@ function IdleState({ onSubmit, seed }: { onSubmit: (question: string) => void; s
         information and turns it into a probability.
       </p>
 
-      <PredictionInput className="mt-7" initialValue={seed} onSubmit={onSubmit} autoFocus size="large" />
+      <QuestionInput
+        className="mt-8"
+        initialValue={seed}
+        onSubmit={onSubmit}
+        examples={examples}
+        autoFocus
+        size="hero"
+      />
 
       <div className="mt-12 space-y-2.5">
         <p className="text-xs uppercase tracking-widest text-faint">Worth predicting</p>
-        <TrendingRail events={railOne} direction="left" durationSeconds={80} />
-        <TrendingRail events={railTwo} direction="right" durationSeconds={92} />
+        <TrendingTicker events={railOne} direction="left" durationSeconds={130} />
+        <TrendingTicker events={railTwo} direction="right" durationSeconds={155} />
       </div>
     </div>
   );

@@ -9,7 +9,8 @@ export type TrendingIconKey =
   | "tennis"
   | "bitcoin"
   | "sparkles"
-  | "shield";
+  | "shield"
+  | "chart";
 
 /**
  * One question worth asking right now.
@@ -24,15 +25,25 @@ export interface TrendingEvent {
   question: string;
   /** Compact label for the rail pill. */
   shortTitle: string;
+  /** Editorial topic label, e.g. "BALLON D'OR". Shown in the ticker. */
+  topic: string;
   category: Category;
   icon: TrendingIconKey;
+  /** When the event itself is expected to resolve, if known. */
+  eventDate: string | null;
   /** Where this entry came from. `curated` is the hand-written seed set. */
   source: "curated" | "live";
+  /** Attribution for a live provider. Never set for curated entries. */
+  sourceUrl?: string;
   /** When this became topical. */
   publishedAt: string;
   /** After this, the question is no longer current and is dropped. */
   expiresAt: string;
-  /** Higher sorts first. */
+  /**
+   * Editorial ordering weight for the curated set. A live provider may replace
+   * this with a real trend score; it is never presented to users as a measured
+   * value, because for curated entries it is only a hand-set priority.
+   */
   priority: number;
 }
 
@@ -49,3 +60,10 @@ export interface TrendingEventsProvider {
   readonly isLive: boolean;
   getEvents(now?: Date): TrendingEvent[];
 }
+
+/**
+ * Shape a future live provider would implement — news APIs, sports fixtures,
+ * market data or the most-asked questions in our own database. Kept here so the
+ * seam is explicit: nothing above this layer knows where questions come from.
+ */
+export type TrendingProviderKind = "curated" | "news" | "fixtures" | "internal";

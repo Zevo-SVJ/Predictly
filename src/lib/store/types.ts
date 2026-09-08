@@ -20,6 +20,13 @@ export interface PredictionStore {
   save(forecast: ForecastResult): Promise<ForecastResult>;
   getById(id: string): Promise<ForecastResult | null>;
   listByUser(userId: string, limit?: number): Promise<ForecastResult[]>;
+  /**
+   * Most recent completed forecast for each of the given slugs.
+   *
+   * Powers the discovery feed, which shows a real probability when one exists
+   * and says so plainly when it doesn't — it never invents a number.
+   */
+  findLatestBySlugs(slugs: string[]): Promise<Map<string, ForecastResult>>;
   /** Attaches an anonymous forecast to a user account after they sign in. */
   claim(id: string, userId: string): Promise<ForecastResult | null>;
   resolve(id: string, resolution: ResolutionInput): Promise<ForecastResult | null>;

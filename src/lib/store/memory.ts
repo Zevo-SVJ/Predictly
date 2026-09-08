@@ -31,6 +31,19 @@ export class MemoryPredictionStore implements PredictionStore {
       .slice(0, limit);
   }
 
+  async findLatestBySlugs(slugs: string[]): Promise<Map<string, ForecastResult>> {
+    const wanted = new Set(slugs);
+    const latest = new Map<string, ForecastResult>();
+
+    for (const forecast of [...forecasts.values()].sort((a, b) =>
+      a.createdAt.localeCompare(b.createdAt),
+    )) {
+      // Ascending order means the last write for a slug wins.
+      if (wanted.has(forecast.slug)) latest.set(forecast.slug, forecast);
+    }
+    return latest;
+  }
+
   async claim(id: string, userId: string): Promise<ForecastResult | null> {
     const existing = forecasts.get(id);
     if (!existing || (existing.userId && existing.userId !== userId)) return null;

@@ -1,52 +1,100 @@
-import { PredictionInput } from "./PredictionInput";
+import { QuestionInput } from "./QuestionInput";
+import { getTrendingEvents } from "@/lib/trending";
 
 /**
- * The whole proposition in one screen: a claim, one line of explanation, and
- * the real product control.
+ * The hero is the product, not a picture of it.
  *
- * There is deliberately no announcement badge and no mock product card. The
- * only "visual" is the tick rule beneath the input — a measuring scale from 0
- * to 100, which is what this product actually does.
+ * No badge, no mock dashboard, no illustration. Display type at the top of the
+ * scale, one line of copy, and the real input — with the questions people are
+ * actually asking cycling through it as an invitation to type.
+ *
+ * The only ornament is a slow data trace and a 0–100 rule: forecasting's own
+ * visual language rather than borrowed AI decoration.
  */
 export function Hero() {
+  const examples = getTrendingEvents().slice(0, 6).map((event) => event.question);
+
   return (
-    <section className="relative">
-      <div className="mx-auto max-w-4xl px-5 pb-16 pt-16 sm:px-8 sm:pb-24 sm:pt-28">
+    <section className="grain relative overflow-hidden border-b border-line">
+      <BackgroundTrace />
+
+      <div className="container-wide relative pb-20 pt-16 sm:pb-28 sm:pt-24">
+        <p className="eyebrow animate-rise-in" style={{ animationDelay: "40ms" }}>
+          Forecast the future
+        </p>
+
         <h1
-          className="animate-rise-in text-[3rem] font-semibold leading-[0.95] sm:text-[4.5rem] md:text-[5.25rem]"
-          style={{ animationDelay: "40ms" }}
+          className="animate-rise-in mt-6 max-w-[14ch] font-semibold leading-[0.86] tracking-[-0.045em]"
+          style={{ fontSize: "var(--text-display)", animationDelay: "100ms" }}
         >
-          Predict what
-          <br />
-          happens next.
+          What happens next?
         </h1>
 
         <p
-          className="animate-rise-in mt-7 max-w-xl text-[17px] leading-relaxed text-muted sm:text-lg"
-          style={{ animationDelay: "140ms" }}
+          className="animate-rise-in mt-8 max-w-[46ch] leading-relaxed text-muted"
+          style={{ fontSize: "var(--text-lead)", animationDelay: "200ms" }}
         >
-          Ask about any future event. Predictly researches the latest
-          information and turns it into a probability.
+          Ask about a future event. Predictly researches what&apos;s happening
+          now and turns the evidence into a probability.
         </p>
 
-        <div className="animate-rise-in mt-10" style={{ animationDelay: "240ms" }}>
-          <PredictionInput size="large" className="max-w-2xl" />
+        <div className="animate-rise-in mt-10 max-w-3xl" style={{ animationDelay: "290ms" }}>
+          <QuestionInput size="hero" examples={examples} />
         </div>
 
-        {/* Probability scale — the brand motif, and a hint at the output. */}
+        {/* Probability scale: a measuring instrument, and a hint at the output. */}
         <div
-          className="animate-rise-in mt-12 max-w-2xl select-none"
-          style={{ animationDelay: "340ms" }}
+          className="animate-rise-in mt-14 max-w-3xl select-none"
+          style={{ animationDelay: "380ms" }}
           aria-hidden
         >
-          <div className="tick-rule h-2.5 w-full opacity-40" />
-          <div className="mt-2 flex justify-between font-mono text-[10.5px] tracking-widest text-faint">
-            <span>0%</span>
-            <span>IMPOSSIBLE — CERTAIN</span>
-            <span>100%</span>
+          <div className="tick-rule h-3 w-full opacity-45" />
+          <div className="mt-2.5 flex justify-between font-mono text-[10.5px] tracking-[0.18em] text-faint">
+            <span>0 · IMPOSSIBLE</span>
+            <span className="hidden sm:inline">EVIDENCE DECIDES</span>
+            <span>CERTAIN · 100</span>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * A slow probability trace drifting behind the hero.
+ *
+ * Two copies of one path translating by -50% for a seamless loop: a single
+ * GPU-composited transform, no canvas, no WebGL, no per-frame JavaScript.
+ */
+function BackgroundTrace() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] overflow-hidden opacity-[0.13]"
+      aria-hidden
+    >
+      <div className="animate-trace flex h-full w-[200%]">
+        <TraceSvg />
+        <TraceSvg />
+      </div>
+    </div>
+  );
+}
+
+function TraceSvg() {
+  return (
+    <svg
+      viewBox="0 0 1200 300"
+      preserveAspectRatio="none"
+      className="h-full w-1/2 shrink-0"
+      role="presentation"
+    >
+      <path
+        d="M0 235 L90 232 L150 205 L210 212 L280 160 L340 172 L410 128 L470 140 L540 96 L610 118 L680 74 L760 92 L830 52 L900 70 L980 38 L1060 54 L1130 26 L1200 34"
+        fill="none"
+        stroke="var(--color-lime)"
+        strokeWidth="1.5"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
   );
 }

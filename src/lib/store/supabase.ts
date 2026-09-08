@@ -101,6 +101,28 @@ export class SupabasePredictionStore implements PredictionStore {
     return (data as PredictionRow[]).map(fromRow);
   }
 
+  async findLatestBySlugs(slugs: string[]): Promise<Map<string, ForecastResult>> {
+    const latest = new Map<string, ForecastResult>();
+    if (slugs.length === 0) return latest;
+
+    // Evidence is not selected here: the feed only needs headline numbers, and
+    // pulling every source for ten rows would be wasteful.
+    const { data, error } = await this.client
+      .from("predictions")
+      .select("*")
+      .in("slug", slugs)
+      .eq("status", "complete")
+      .order("created_at", { ascending: false })
+      .limit(slugs.length * 4);
+    if (error || !data) return latest;
+
+    for (const row of data as PredictionRow[]) {
+      // Descending order means the first row seen for a slug is the newest.
+      if (!latest.has(row.slug)) latest.set(row.slug, fromRow(row));
+    }
+    return latest;
+  }
+
   async claim(id: string, userId: string): Promise<ForecastResult | null> {
     const { data, error } = await this.client
       .from("predictions")
