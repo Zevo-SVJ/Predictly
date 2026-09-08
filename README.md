@@ -92,37 +92,52 @@ stale posts is not. Confidence is capped at medium when the evidence is old.
 
 ## The homepage
 
-Six sections, each earning its place. The page is roughly half its previous
-height because the redundant example sections are gone, not because content was
-thinned.
+One environment entered in sequence, not a feature list. The rhythm alternates
+on purpose — a large hero, a fast full-bleed ticker, an immersive category
+canvas, the real product, a quiet explanation, then the invitation.
 
 | Section | What it is |
 | --- | --- |
-| Hero | Display headline, the real input, a 0–100 rule. One example at a time, cycling through the placeholder. |
-| On the radar | One ticker, topic labels only. |
-| What can you predict? | Breadth as a single composition — a constellation on desktop, a thumb-driven strip on mobile. |
-| Ask. We'll investigate | The page's one product demonstration. Runs the real `POST /api/predict`. |
-| Current information | The one explanatory section. |
-| What happens next? | Closing CTA back to the input. |
+| Hero | Display headline and the real input, which is one of the largest objects on the page. One example at a time, cycling through the placeholder. |
+| On the radar | Full-bleed ticker, topic labels only. |
+| What can you predict? | Breadth as one composition — a constellation on desktop, a thumb-driven gallery on mobile. |
+| Ask Predictly | The page's one product demonstration. Runs the real `POST /api/predict`. |
+| How it works | Three words in sequence. Nothing more. |
+| Feedback | Renders nothing until real feedback exists. See below. |
+| What happens next? | Full-bleed close, ending on a working input. |
+
+Scale comes from the container system, not from font sizes: four tiers
+(`--w-text` 780px, `--w-content` 1320px, `--w-canvas` 1680px, and full-bleed),
+so some sections touch the viewport edges while others stay narrow. A page
+where every section is the same column reads small however large its type is.
 
 **One example at a time** is enforced throughout: the hero cycles a single
 placeholder, the radar shows topics rather than questions, the category field
-reveals only the active subject's question, and the demo offers one question.
+reveals only the active subject's question, and the demo offers one.
+
+### Feedback
+
+`src/lib/feedback/index.ts` exports an **empty array**, so the section renders
+nothing. Predictly has not launched, nobody has used it, and there is nothing
+truthful to show; plausible placeholder quotes on a public page would be
+fabricated social proof, which is the one thing a forecasting product cannot
+afford. The file documents what each field requires — the person said it, they
+agreed to be quoted publicly, and the source is recorded — and the section
+appears the moment the array is not empty.
 
 ### Brand marks
 
 `src/lib/categories/` models each subject with an optional `asset` field.
-**No asset is currently set on any mark**, so every one renders as its name in
-type via `BrandMark`. Two reasons: this environment has no access to the
-official brand resources these would have to come from, and hand-drawing
-substitutes would be both an approximation of a protected mark and a
-fabrication. The typographic form is the permitted neutral representation, not
-a placeholder.
+**No asset is currently set**, so every mark renders as its name in type via
+`BrandMark`. This environment has no access to the official brand resources
+these would have to come from, and hand-drawing substitutes would be both an
+approximation of a protected mark and a fabrication. The typographic form is
+the permitted neutral representation, not a placeholder.
 
 To add a cleared mark: confirm the trademark owner's terms permit the use, put
-the official file in `/public/brands/`, and set `asset` and `officialUrl` on
-that entry. `BrandMark` picks it up with no component change. Bitcoin carries a
-glyph because ₿ is a Unicode currency character (U+20BF) and free to use.
+the official file in `/public/brands/`, and set `asset` and `officialUrl`.
+`BrandMark` picks it up with no component change. Bitcoin carries a glyph
+because ₿ is a Unicode currency character (U+20BF) and free to use.
 
 ## Trending predictions
 

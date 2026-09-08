@@ -104,17 +104,21 @@ export function findMark(id: string) {
 }
 
 /**
- * Hand-placed so the field reads as a composition rather than a scatter:
- * an asymmetric diagonal with the two largest marks off-centre and the smaller
- * ones filling the corners.
+ * Hand-placed so the field reads as a composition rather than a scatter: an
+ * asymmetric descent with the largest mark anchoring the left and the smaller
+ * ones holding the corners.
+ *
+ * `x` is the label's LEFT edge, so each entry is chosen against how wide that
+ * word actually renders — "Champions League" at xl occupies roughly two thirds
+ * of the field by itself, which is what a naive grid of positions collides with.
  */
 export const FIELD_PLACEMENT: MarkPlacement[] = [
-  { markId: "champions-league", x: 4, y: 26, scale: "xl" },
-  { markId: "apple", x: 63, y: 6, scale: "lg" },
-  { markId: "nasa", x: 88, y: 30, scale: "sm" },
-  { markId: "formula-1", x: 34, y: 52, scale: "lg" },
-  { markId: "openai", x: 76, y: 55, scale: "md" },
-  { markId: "bitcoin", x: 5, y: 72, scale: "md" },
-  { markId: "us-open", x: 55, y: 84, scale: "md" },
-  { markId: "oscars", x: 86, y: 88, scale: "sm" },
+  { markId: "apple", x: 52, y: 4, scale: "lg" },
+  { markId: "nasa", x: 86, y: 11, scale: "sm" },
+  { markId: "champions-league", x: 3, y: 24, scale: "xl" },
+  { markId: "openai", x: 76, y: 31, scale: "md" },
+  { markId: "formula-1", x: 22, y: 50, scale: "lg" },
+  { markId: "oscars", x: 72, y: 57, scale: "sm" },
+  { markId: "bitcoin", x: 4, y: 72, scale: "md" },
+  { markId: "us-open", x: 44, y: 84, scale: "md" },
 ];

@@ -17,35 +17,36 @@ export function Hero() {
   // Height is forced only from sm up. On a phone the content decides it, so the
   // input is never pushed below the fold by decorative space.
   return (
-    <section className="grain relative flex flex-col justify-center overflow-hidden sm:min-h-[86vh]">
+    <section className="grain relative flex flex-col justify-center overflow-hidden sm:min-h-[82vh]">
+      <div className="rule-field pointer-events-none absolute inset-0" aria-hidden />
       <BackgroundTrace />
 
-      <div className="container-wide relative pb-14 pt-10 sm:py-20">
+      <div className="container-canvas relative pb-14 pt-10 sm:pb-16 sm:pt-16">
         <p className="eyebrow animate-rise-in" style={{ animationDelay: "40ms" }}>
           Forecast the future
         </p>
 
         <h1
-          className="animate-rise-in mt-5 max-w-[12ch] font-semibold leading-[0.92] tracking-[-0.045em]"
+          className="animate-rise-in mt-5 max-w-[11ch] font-semibold leading-[0.9] tracking-[-0.045em]"
           style={{ fontSize: "var(--text-display)", animationDelay: "100ms" }}
         >
           What happens next?
         </h1>
 
         <p
-          className="animate-rise-in mt-6 max-w-[44ch] leading-relaxed text-muted"
+          className="animate-rise-in mt-7 max-w-[42ch] leading-relaxed text-muted"
           style={{ fontSize: "var(--text-lead)", animationDelay: "180ms" }}
         >
           Ask about a future event. Predictly researches what&apos;s happening
           now and turns the evidence into a forecast.
         </p>
 
-        <div className="animate-rise-in mt-9 max-w-2xl" style={{ animationDelay: "260ms" }}>
+        <div className="animate-rise-in mt-10 max-w-[62rem]" style={{ animationDelay: "260ms" }}>
           <QuestionInput size="hero" examples={examples} />
         </div>
 
         <div
-          className="animate-rise-in mt-10 max-w-2xl select-none"
+          className="animate-rise-in mt-10 max-w-[62rem] select-none"
           style={{ animationDelay: "340ms" }}
           aria-hidden
         >

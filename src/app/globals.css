@@ -39,18 +39,21 @@
   /* Tuned against the composition, not picked for maximum size: the display
      line has to dominate while leaving the input visually important and the
      next section visible below the fold. */
-  --text-display: clamp(2.75rem, 6.2vw, 6.5rem);
-  --text-h1: clamp(2.25rem, 4.6vw, 4rem);
-  --text-h2: clamp(1.8rem, 3.4vw, 2.9rem);
+  --text-display: clamp(3.1rem, 6vw, 7rem);
+  --text-h1: clamp(2.4rem, 4.4vw, 4.25rem);
+  --text-h2: clamp(1.9rem, 3.2vw, 3rem);
   --text-h3: clamp(1.25rem, 1.9vw, 1.6rem);
-  --text-lead: clamp(1rem, 1.35vw, 1.2rem);
-  --text-figure: clamp(3rem, 7vw, 6rem);
+  --text-lead: clamp(1.05rem, 1.35vw, 1.25rem);
+  --text-figure: clamp(3.5rem, 8vw, 7rem);
 
-  /* --- container widths --- */
-  --w-bleed: 100%;
+  /* --- container widths ---
+     Four tiers, not one. A page where every section is the same 1200px column
+     reads small no matter how large the type inside it is; scale comes from
+     some sections touching the viewport edges and others staying narrow. --- */
+  --w-text: 780px;
+  --w-content: 1320px;
+  --w-canvas: 1680px;
   --w-wide: 1560px;
-  --w-content: 1200px;
-  --w-text: 62ch;
 
   /* --- vertical rhythm ---
      Tuned against stacking: adjacent sections each contribute this, so the
@@ -130,10 +133,30 @@
     padding-inline: 1.25rem;
   }
 
+  /* The widest tier. Used for the visual canvases that carry the page's scale. */
+  .container-canvas {
+    width: 100%;
+    max-width: var(--w-canvas);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  .container-text {
+    width: 100%;
+    max-width: var(--w-text);
+  }
+
   @media (min-width: 640px) {
     .container-wide,
-    .container-content {
+    .container-content,
+    .container-canvas {
       padding-inline: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container-canvas {
+      padding-inline: 4rem;
     }
   }
 
@@ -174,6 +197,19 @@
     pointer-events: none;
     opacity: 0.032;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /*
+   * Fine horizontal rules behind the hero. Reads as measurement paper rather
+   * than decoration, costs one gradient, and never competes with the type.
+   */
+  .rule-field {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.028) 0 1px,
+      transparent 1px 88px
+    );
+    mask-image: radial-gradient(120% 80% at 50% 40%, #000 30%, transparent 78%);
   }
 
   .rail-mask {

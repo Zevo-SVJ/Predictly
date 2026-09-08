@@ -79,12 +79,12 @@ export function QuestionInput({
     <form onSubmit={handleSubmit} className={cn("w-full", className)} noValidate>
       <div
         className={cn(
-          "edge-lit relative flex items-center gap-2 rounded-2xl border bg-raised",
+          "edge-lit relative flex items-center gap-2 rounded-[20px] border bg-raised",
           "transition-[border-color,box-shadow,background-color] duration-300",
           focused
-            ? "border-lime/50 bg-elevated ring-[6px] ring-lime/[0.07]"
-            : "border-line-strong hover:border-white/20",
-          hero ? "p-2 pl-5 sm:pl-7" : "p-1.5 pl-4",
+            ? "border-lime/55 bg-elevated ring-[10px] ring-lime/[0.06]"
+            : "border-line-strong hover:border-white/25",
+          hero ? "p-2 pl-5 sm:p-2.5 sm:pl-8" : "p-1.5 pl-4",
         )}
       >
         <label htmlFor="question-input" className="sr-only">
@@ -101,7 +101,7 @@ export function QuestionInput({
             className={cn(
               "pointer-events-none absolute inset-y-0 flex items-center overflow-hidden text-faint",
               hero
-                ? "left-5 right-[8.75rem] text-[16px] sm:left-7 sm:right-[11.5rem] sm:text-[19px]"
+                ? "left-5 right-[8.75rem] text-[16.5px] sm:left-8 sm:right-[12.5rem] sm:text-[21px]"
                 : "left-4 right-[7.5rem] text-[15px]",
             )}
           >
@@ -135,7 +135,7 @@ export function QuestionInput({
           aria-invalid={error ? true : undefined}
           className={cn(
             "relative min-w-0 flex-1 bg-transparent text-fg outline-none disabled:opacity-60",
-            hero ? "py-3.5 text-[16px] sm:text-[19px]" : "py-2.5 text-[15px]",
+            hero ? "py-4 text-[16.5px] sm:py-5 sm:text-[21px]" : "py-2.5 text-[15px]",
           )}
         />
 
@@ -145,7 +145,7 @@ export function QuestionInput({
           className={cn(
             "inline-flex shrink-0 items-center gap-2 rounded-xl bg-lime font-medium text-lime-ink",
             "transition-all duration-200 hover:bg-lime-dim active:scale-[0.97] disabled:opacity-70",
-            hero ? "px-5 py-3.5 text-[15px] sm:px-7" : "px-4 py-2.5 text-sm",
+            hero ? "px-5 py-3.5 text-[15px] sm:px-8 sm:py-4 sm:text-[16px]" : "px-4 py-2.5 text-sm",
           )}
         >
           {pending ? (

@@ -19,15 +19,18 @@ export function LiveDemo({ questions }: { questions: TrendingEvent[] }) {
   const [running, setRunning] = useState<string | null>(null);
 
   return (
-    <section id="how-it-works" className="scroll-mt-20 section-y border-b border-line">
-      <div className="container-wide">
+    <section id="ask" className="scroll-mt-20 border-t border-line py-16 sm:py-24">
+      <div className="container-content">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <h2 className="font-semibold leading-[0.92]" style={{ fontSize: "var(--text-h2)" }}>
-            Ask. We&apos;ll investigate.
+          <h2
+            className="font-semibold leading-[0.9] tracking-[-0.045em]"
+            style={{ fontSize: "var(--text-h1)" }}
+          >
+            Ask Predictly
           </h2>
-          <p className="max-w-[38ch] text-[14.5px] leading-relaxed text-muted">
-            This runs the real thing, right here. Pick a question and watch
-            Predictly research it — no account, no simulation.
+          <p className="max-w-[34ch] text-[15px] leading-relaxed text-muted">
+            Give it a future question. We&apos;ll investigate — right here, no
+            account, no simulation.
           </p>
         </div>
 

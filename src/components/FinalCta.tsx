@@ -1,34 +1,32 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { QuestionInput } from "./QuestionInput";
+import { getTrendingEvents } from "@/lib/trending";
 
 /**
- * The closing invitation, pointing straight back at the input.
+ * The closing moment, full-bleed and dark, ending on the same object the page
+ * opened with: a working input. A visitor who scrolled this far shouldn't have
+ * to scroll back up to act.
  *
- * Deliberately not wrapped in a scroll reveal: this is the page's primary
- * conversion element and must be painted whether or not an
- * IntersectionObserver ever fires.
+ * Deliberately not wrapped in a scroll reveal — the primary conversion element
+ * must be painted whether or not an IntersectionObserver ever fires.
  */
 export function FinalCta() {
+  const examples = getTrendingEvents().slice(0, 4).map((event) => event.question);
+
   return (
     <section className="grain relative overflow-hidden border-t border-line">
-      <div className="container-wide relative py-20 sm:py-28">
+      <div className="rule-field pointer-events-none absolute inset-0" aria-hidden />
+
+      <div className="container-canvas relative py-24 sm:py-36">
         <h2
-          className="font-semibold leading-[0.95] tracking-[-0.045em]"
-          style={{ fontSize: "var(--text-h1)" }}
+          className="max-w-[11ch] font-semibold leading-[0.9] tracking-[-0.045em]"
+          style={{ fontSize: "var(--text-display)" }}
         >
           What happens next?
         </h2>
 
-        <Link
-          href="/predict"
-          className="group mt-9 inline-flex items-center gap-3 rounded-full bg-lime px-7 py-3.5 text-[15px] font-medium text-lime-ink transition-all duration-200 hover:bg-lime-dim active:scale-[0.97]"
-        >
-          Ask Predictly
-          <ArrowRight
-            className="size-4 transition-transform duration-300 group-hover:translate-x-1"
-            aria-hidden
-          />
-        </Link>
+        <div className="mt-10 max-w-[62rem] sm:mt-14">
+          <QuestionInput size="hero" examples={examples} />
+        </div>
       </div>
     </section>
   );

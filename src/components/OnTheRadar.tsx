@@ -13,11 +13,13 @@ export function OnTheRadar() {
 
   return (
     <section id="radar" className="scroll-mt-20 border-y border-line">
-      <div className="container-wide flex items-center gap-6 py-3.5">
+      <div className="container-canvas flex items-center py-4">
         <h2 className="eyebrow shrink-0">On the radar</h2>
       </div>
+      {/* Edge to edge on purpose: the rail crossing the full viewport is one of
+          the moments that stops the page reading as a column of cards. */}
       <div className="border-t border-line">
-        <TrendingTicker events={events} direction="left" durationSeconds={95} />
+        <TrendingTicker events={events} direction="left" durationSeconds={110} />
       </div>
     </section>
   );

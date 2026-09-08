@@ -19,10 +19,10 @@ import { cn } from "@/lib/utils";
  * thumb, one subject at a time, with no hover anywhere in the interaction.
  */
 const SCALE_CLASS = {
-  sm: "text-[clamp(0.95rem,1.4vw,1.25rem)]",
-  md: "text-[clamp(1.15rem,2vw,1.75rem)]",
-  lg: "text-[clamp(1.5rem,2.8vw,2.5rem)]",
-  xl: "text-[clamp(1.9rem,3.8vw,3.4rem)]",
+  sm: "text-[clamp(1rem,1.5vw,1.5rem)]",
+  md: "text-[clamp(1.3rem,2.3vw,2.3rem)]",
+  lg: "text-[clamp(1.75rem,3.4vw,3.5rem)]",
+  xl: "text-[clamp(2.1rem,4.2vw,4.25rem)]",
 } as const;
 
 /**
@@ -51,17 +51,17 @@ export function PredictField() {
   );
 
   return (
-    <section id="explore" className="scroll-mt-20 section-y border-t border-line">
-      <div className="container-wide">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+    <section id="explore" className="scroll-mt-20 border-t border-line py-16 sm:py-24">
+      <div className="container-canvas">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1.38fr)] lg:items-start lg:gap-12">
           <div className="min-w-0">
             <h2
-              className="font-semibold leading-[0.95] tracking-[-0.04em]"
+              className="font-semibold leading-[0.9] tracking-[-0.045em]"
               style={{ fontSize: "var(--text-h1)" }}
             >
-              What can you
+              What can
               <br />
-              predict?
+              you predict?
             </h2>
             <p className="mt-6 max-w-[38ch] text-[15px] leading-relaxed text-muted">
               From the next big launch to the next champion, Predictly follows
@@ -73,11 +73,19 @@ export function PredictField() {
             <div className="mt-10 hidden min-h-[9.5rem] lg:block">
               <ActiveDetail activeId={activeId} onStart={start} />
             </div>
+
+            <ul className="mt-12 hidden flex-wrap gap-x-5 gap-y-2 border-t border-line pt-6 lg:flex">
+              {CATEGORIES.map((category) => (
+                <li key={category.id} className="eyebrow">
+                  {category.name}
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* ---------------------------------------------------- desktop field */}
           <div
-            className="group/field relative hidden aspect-[16/11] w-full lg:block"
+            className="group/field relative hidden aspect-[10/7] w-full min-h-[26rem] lg:block"
             onMouseLeave={() => setActiveId(FIELD_PLACEMENT[0]?.markId ?? "")}
           >
             <ConnectingLine activeId={activeId} />
@@ -216,14 +224,29 @@ function MobileStrip({
               onClick={() => onStart(mark.id)}
               aria-label={`${mark.name} — ${mark.categoryName}. Forecast: ${mark.question}`}
               className={cn(
-                "flex h-24 min-w-[13rem] items-center justify-center rounded-2xl border px-6 text-center",
-                "text-[1.5rem] font-semibold tracking-[-0.03em] transition-colors duration-300",
+                "flex h-36 w-[17rem] flex-col items-start justify-between rounded-2xl border p-5 text-left",
+                "transition-colors duration-300",
                 activeId === mark.id
-                  ? "border-lime/30 bg-elevated text-fg"
-                  : "border-line bg-surface text-faint",
+                  ? "border-lime/30 bg-elevated"
+                  : "border-line bg-surface",
               )}
             >
-              <BrandMark mark={mark} />
+              <span
+                className={cn(
+                  "eyebrow transition-colors duration-300",
+                  activeId === mark.id && "text-lime/80",
+                )}
+              >
+                {mark.categoryName}
+              </span>
+              <span
+                className={cn(
+                  "text-[1.75rem] font-semibold leading-[1.05] tracking-[-0.035em] transition-colors duration-300",
+                  activeId === mark.id ? "text-fg" : "text-faint",
+                )}
+              >
+                <BrandMark mark={mark} />
+              </span>
             </button>
           </li>
         ))}
@@ -231,8 +254,7 @@ function MobileStrip({
 
       {active ? (
         <div key={active.id} className="animate-rise-in mt-7">
-          <p className="eyebrow">{active.categoryName}</p>
-          <p className="mt-2.5 text-[16px] leading-snug text-fg">{active.question}</p>
+          <p className="text-[16.5px] leading-snug text-fg">{active.question}</p>
           <button
             type="button"
             onClick={() => onStart(active.id)}

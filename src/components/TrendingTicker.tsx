@@ -48,12 +48,12 @@ export function TrendingTicker({
                   router.push(`/predict?q=${encodeURIComponent(event.question)}&from=${event.id}`);
                 }}
                 title={event.question}
-                className="group flex h-full items-center whitespace-nowrap border-r border-line px-8 py-4 transition-colors duration-300 hover:bg-surface"
+                className="group flex h-full items-center whitespace-nowrap border-r border-line px-8 py-6 transition-colors duration-300 hover:bg-surface sm:px-14 sm:py-9"
               >
                 {/* Topic only. The full questions live in the input and the
                     category field; repeating them here is the third time a
                     visitor reads the same list. */}
-                <span className="text-[15px] font-medium uppercase tracking-[0.14em] text-muted transition-colors duration-300 group-hover:text-lime">
+                <span className="text-[15px] font-medium uppercase tracking-[0.16em] text-muted transition-colors duration-300 group-hover:text-lime sm:text-[22px]">
                   {event.topic}
                 </span>
               </button>

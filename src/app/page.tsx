@@ -1,12 +1,13 @@
+import { Feedback } from "@/components/Feedback";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
+import { HowItWorks } from "@/components/HowItWorks";
 import { LandingViewTracker } from "@/components/LandingViewTracker";
 import { LiveDemo } from "@/components/LiveDemo";
 import { Navbar } from "@/components/Navbar";
 import { OnTheRadar } from "@/components/OnTheRadar";
 import { PredictField } from "@/components/PredictField";
-import { TrustStrip } from "@/components/TrustStrip";
 import { SITE } from "@/lib/config";
 import { getTrendingEvents } from "@/lib/trending";
 
@@ -20,15 +21,14 @@ export const metadata = {
 };
 
 /**
- * Six sections, each earning its place.
+ * One environment, entered in sequence — not a feature list.
  *
- * Hero states the offer and hands over the product. The radar is the only
- * discovery rail. The field shows breadth as one composition. The demo runs the
- * real backend once — the page's single product demonstration. Then one compact
- * explanation and the invitation back to the input.
+ * The rhythm alternates deliberately: a large hero, a fast full-bleed ticker,
+ * an immersive category canvas, the real product, a quiet explanation, then the
+ * invitation. `Feedback` renders nothing until real feedback exists.
  */
 export default function HomePage() {
-  // A single question for the live demo: one prominent example at a time.
+  // One question for the demo: a single prominent example at a time.
   const demoQuestion = getTrendingEvents().slice(0, 1);
 
   return (
@@ -41,7 +41,8 @@ export default function HomePage() {
         <OnTheRadar />
         <PredictField />
         <LiveDemo questions={demoQuestion} />
-        <TrustStrip />
+        <HowItWorks />
+        <Feedback />
         <FinalCta />
       </main>
 
