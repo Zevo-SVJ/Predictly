@@ -24,17 +24,81 @@ export const USER_FORECASTS_PER_WINDOW = 20;
 /** Rate-limit window length in milliseconds. */
 export const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
+/** Trims a raw env value and treats blank as unset. */
+function clean(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+/**
+ * Turns an env value into an absolute site URL, or `undefined` if it can't be
+ * one.
+ *
+ * Vercel's host variables are bare hostnames (`my-app.vercel.app`), so a scheme
+ * is added when missing. Anything that still fails to parse is rejected rather
+ * than propagated: `new URL()` in `app/layout.tsx` must never be handed a value
+ * that throws, which is what broke the Vercel build when
+ * `NEXT_PUBLIC_SITE_URL` was defined but empty.
+ */
+function normaliseSiteUrl(value: string | undefined): string | undefined {
+  const raw = clean(value);
+  if (!raw) return undefined;
+
+  const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    const url = new URL(withScheme);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return undefined;
+    // Trailing slash removed so `${SITE.url}/sitemap.xml` never doubles up.
+    // The pathname is kept: `metadataBase` may legitimately carry a base path.
+    return url.href.replace(/\/+$/, "");
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Resolves the canonical origin for metadata, canonical links, sitemap and
+ * share URLs.
+ *
+ * Each `process.env.X` below is written as a literal member access on purpose:
+ * that is the form Next.js statically replaces, so the `NEXT_PUBLIC_` entries
+ * survive into the client bundle. Non-public variables simply read as
+ * `undefined` there and the chain falls through.
+ */
+function resolveSiteUrl(): string {
+  const isVercelProduction =
+    process.env.VERCEL_ENV === "production" ||
+    process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
+
+  return (
+    // 1. Explicit configuration always wins.
+    normaliseSiteUrl(process.env.NEXT_PUBLIC_SITE_URL) ??
+    // 2. Vercel production: the project's stable domain. Deliberately not
+    //    VERCEL_URL, which is unique per deployment and would point canonical
+    //    URLs and og:url at a throwaway hostname on every deploy.
+    (isVercelProduction
+      ? (normaliseSiteUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+        normaliseSiteUrl(process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL))
+      : undefined) ??
+    // 3. Preview deployments: the deployment's own hostname is correct there.
+    normaliseSiteUrl(process.env.VERCEL_URL) ??
+    normaliseSiteUrl(process.env.NEXT_PUBLIC_VERCEL_URL) ??
+    // 4. Local development and a local `next build`.
+    "http://localhost:3000"
+  );
+}
+
 export const SITE = {
   name: "Predictly",
   tagline: "Forecast What Happens Next",
   description:
     "Ask about any future event. Predictly researches the latest information and gives you a probability-based forecast.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  /** Always a valid absolute URL with no trailing slash. Safe for `new URL()`. */
+  url: resolveSiteUrl(),
 } as const;
 
 function env(name: string): string | undefined {
-  const value = process.env[name];
-  return value && value.trim().length > 0 ? value.trim() : undefined;
+  return clean(process.env[name]);
 }
 
 /** Server-only provider credentials. Never import this from a client component. */
