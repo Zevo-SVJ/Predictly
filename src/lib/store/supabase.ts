@@ -1,7 +1,16 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Category, Confidence, EvidenceItem, Forecast, Outcome, ResolutionStatus } from "@/lib/types";
+import type {
+  Category,
+  Confidence,
+  EvidenceItem,
+  ForecastResult,
+  ForecastStatus,
+  Outcome,
+  ResolutionStatus,
+  Stance,
+} from "@/lib/types";
 import type { PredictionStore, ResolutionInput } from "./types";
 
 /** Row shapes mirroring `supabase/schema.sql`. */
@@ -14,19 +23,19 @@ interface PredictionRow {
   category: string;
   outcomes: Outcome[];
   headline_outcome_id: string;
+  outcome: string;
   probability: number;
   confidence: string;
   reasoning: string;
-  factors_up: { text: string; weight: number }[];
-  factors_down: { text: string; weight: number }[];
+  factors_for: { text: string; weight: number }[];
+  factors_against: { text: string; weight: number }[];
   providers: { research: string; reasoning: string };
-  is_dev_fallback: boolean;
   status: string;
-  resolution_date: string | null;
+  event_date: string | null;
   resolution_status: string;
-  resolved_outcome_id: string | null;
+  resolved_outcome: string | null;
   resolution_source: string | null;
-  resolved_at: string | null;
+  resolution_date: string | null;
   researched_at: string;
   created_at: string;
   evidence?: EvidenceRow[] | null;
@@ -41,10 +50,10 @@ interface EvidenceRow {
   published_at: string | null;
   summary: string;
   supports_outcome_id: string | null;
+  stance: string;
   strength: number;
   reliability: number;
   relevance: number;
-  is_dev_fallback: boolean;
 }
 
 const SELECT_WITH_EVIDENCE = "*, evidence(*)";
@@ -55,7 +64,7 @@ export class SupabasePredictionStore implements PredictionStore {
 
   constructor(private readonly client: SupabaseClient) {}
 
-  async save(forecast: Forecast): Promise<Forecast> {
+  async save(forecast: ForecastResult): Promise<ForecastResult> {
     const { error } = await this.client.from("predictions").insert(toPredictionRow(forecast));
     if (error) throw new Error(`Could not save forecast: ${error.message}`);
 
@@ -63,15 +72,15 @@ export class SupabasePredictionStore implements PredictionStore {
       const { error: evidenceError } = await this.client
         .from("evidence")
         .insert(forecast.evidence.map((item) => toEvidenceRow(item, forecast.id)));
-      // A forecast without its evidence rows is still worth keeping; surface the
-      // failure in logs rather than throwing away a completed research run.
+      // A forecast without its evidence rows is still worth keeping; log rather
+      // than discard a completed research run.
       if (evidenceError) console.error("Could not save evidence:", evidenceError.message);
     }
 
     return forecast;
   }
 
-  async getById(id: string): Promise<Forecast | null> {
+  async getById(id: string): Promise<ForecastResult | null> {
     const { data, error } = await this.client
       .from("predictions")
       .select(SELECT_WITH_EVIDENCE)
@@ -81,7 +90,7 @@ export class SupabasePredictionStore implements PredictionStore {
     return fromRow(data as PredictionRow);
   }
 
-  async listByUser(userId: string, limit = 50): Promise<Forecast[]> {
+  async listByUser(userId: string, limit = 50): Promise<ForecastResult[]> {
     const { data, error } = await this.client
       .from("predictions")
       .select(SELECT_WITH_EVIDENCE)
@@ -92,7 +101,7 @@ export class SupabasePredictionStore implements PredictionStore {
     return (data as PredictionRow[]).map(fromRow);
   }
 
-  async claim(id: string, userId: string): Promise<Forecast | null> {
+  async claim(id: string, userId: string): Promise<ForecastResult | null> {
     const { data, error } = await this.client
       .from("predictions")
       .update({ user_id: userId })
@@ -105,14 +114,14 @@ export class SupabasePredictionStore implements PredictionStore {
     return data ? fromRow(data as PredictionRow) : this.getById(id);
   }
 
-  async resolve(id: string, resolution: ResolutionInput): Promise<Forecast | null> {
+  async resolve(id: string, resolution: ResolutionInput): Promise<ForecastResult | null> {
     const { data, error } = await this.client
       .from("predictions")
       .update({
         resolution_status: resolution.status,
-        resolved_outcome_id: resolution.resolvedOutcomeId,
+        resolved_outcome: resolution.resolvedOutcomeId,
         resolution_source: resolution.resolutionSource,
-        resolved_at: new Date().toISOString(),
+        resolution_date: new Date().toISOString(),
       })
       .eq("id", id)
       .select(SELECT_WITH_EVIDENCE)
@@ -122,7 +131,7 @@ export class SupabasePredictionStore implements PredictionStore {
   }
 }
 
-function toPredictionRow(forecast: Forecast) {
+function toPredictionRow(forecast: ForecastResult) {
   return {
     id: forecast.id,
     user_id: forecast.userId,
@@ -132,19 +141,19 @@ function toPredictionRow(forecast: Forecast) {
     category: forecast.category,
     outcomes: forecast.outcomes,
     headline_outcome_id: forecast.headlineOutcomeId,
+    outcome: forecast.outcome,
     probability: forecast.probability,
     confidence: forecast.confidence,
     reasoning: forecast.reasoning,
-    factors_up: forecast.factorsUp,
-    factors_down: forecast.factorsDown,
+    factors_for: forecast.factorsFor,
+    factors_against: forecast.factorsAgainst,
     providers: forecast.providers,
-    is_dev_fallback: forecast.isDevFallback,
-    status: "complete",
-    resolution_date: forecast.resolutionDate,
+    status: forecast.status,
+    event_date: forecast.eventDate,
     resolution_status: forecast.resolutionStatus,
-    resolved_outcome_id: forecast.resolvedOutcomeId,
+    resolved_outcome: forecast.resolvedOutcomeId,
     resolution_source: forecast.resolutionSource,
-    resolved_at: forecast.resolvedAt,
+    resolution_date: forecast.resolvedAt,
     researched_at: forecast.researchedAt,
     created_at: forecast.createdAt,
   };
@@ -160,14 +169,14 @@ function toEvidenceRow(item: EvidenceItem, predictionId: string) {
     published_at: item.publishedAt,
     summary: item.summary,
     supports_outcome_id: item.supportsOutcomeId,
+    stance: item.stance,
     strength: item.strength,
     reliability: item.reliability,
     relevance: item.relevance,
-    is_dev_fallback: item.isDevFallback,
   };
 }
 
-function fromRow(row: PredictionRow): Forecast {
+function fromRow(row: PredictionRow): ForecastResult {
   return {
     id: row.id,
     slug: row.slug,
@@ -176,11 +185,12 @@ function fromRow(row: PredictionRow): Forecast {
     category: row.category as Category,
     outcomes: row.outcomes ?? [],
     headlineOutcomeId: row.headline_outcome_id,
+    outcome: row.outcome,
     probability: Number(row.probability),
     confidence: row.confidence as Confidence,
     reasoning: row.reasoning,
-    factorsUp: row.factors_up ?? [],
-    factorsDown: row.factors_down ?? [],
+    factorsFor: row.factors_for ?? [],
+    factorsAgainst: row.factors_against ?? [],
     evidence: (row.evidence ?? []).map((item) => ({
       id: item.id,
       title: item.title,
@@ -189,20 +199,20 @@ function fromRow(row: PredictionRow): Forecast {
       publishedAt: item.published_at,
       summary: item.summary,
       supportsOutcomeId: item.supports_outcome_id,
+      stance: item.stance as Stance,
       strength: Number(item.strength),
       reliability: Number(item.reliability),
       relevance: Number(item.relevance),
-      isDevFallback: item.is_dev_fallback,
     })),
-    resolutionDate: row.resolution_date,
+    eventDate: row.event_date,
+    status: row.status as ForecastStatus,
     resolutionStatus: row.resolution_status as ResolutionStatus,
-    resolvedOutcomeId: row.resolved_outcome_id,
+    resolvedOutcomeId: row.resolved_outcome,
     resolutionSource: row.resolution_source,
-    resolvedAt: row.resolved_at,
+    resolvedAt: row.resolution_date,
     researchedAt: row.researched_at,
     createdAt: row.created_at,
     userId: row.user_id,
-    isDevFallback: row.is_dev_fallback,
     providers: row.providers ?? { research: "unknown", reasoning: "unknown" },
   };
 }

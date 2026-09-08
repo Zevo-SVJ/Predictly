@@ -1,67 +1,55 @@
 "use client";
 
 import {
-  Award,
   Bitcoin,
-  ChartNoAxesCombined,
-  Clapperboard,
-  Cpu,
   Flag,
-  Gamepad2,
-  Globe,
-  Landmark,
-  Music4,
-  Percent,
-  Rocket,
-  Smartphone,
-  Thermometer,
-  Trophy,
+  Goal,
   type LucideIcon,
+  ShieldHalf,
+  Smartphone,
+  Sparkles,
+  Trophy,
+  Volleyball,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { track } from "@/lib/analytics";
-import type { TrendingEvent, TrendingIconKey } from "@/lib/data/trending";
+import type { TrendingEvent, TrendingIconKey } from "@/lib/trending";
 import { cn } from "@/lib/utils";
 
-/** Icon per subject — a controller for games, a chequered flag for F1, and so on. */
+/** One icon per subject: a trophy for the Ballon d'Or, a flag for F1, and so on. */
 const ICONS: Record<TrendingIconKey, LucideIcon> = {
-  gamepad: Gamepad2,
   trophy: Trophy,
-  bitcoin: Bitcoin,
   smartphone: Smartphone,
-  flag: Flag,
-  landmark: Landmark,
-  award: Award,
-  rocket: Rocket,
-  percent: Percent,
-  clapperboard: Clapperboard,
-  thermometer: Thermometer,
-  chart: ChartNoAxesCombined,
-  cpu: Cpu,
-  music: Music4,
-  globe: Globe,
+  football: Goal,
+  racing: Flag,
+  tennis: Volleyball,
+  bitcoin: Bitcoin,
+  sparkles: Sparkles,
+  shield: ShieldHalf,
 };
 
 interface TrendingRailProps {
   events: TrendingEvent[];
   direction: "left" | "right";
-  /** Seconds for one full pass. Slower reads as calmer and more deliberate. */
+  /** Seconds for one full pass. Slow reads as deliberate, not busy. */
   durationSeconds?: number;
 }
 
 /**
- * Continuously moving rail of open questions.
+ * A continuously moving rail of open questions.
  *
  * The track holds two copies of the list and translates by exactly -50%, so the
  * loop is seamless. Hover and keyboard focus pause it; `prefers-reduced-motion`
- * turns the whole thing into an ordinary scrollable list (see globals.css).
+ * turns it into an ordinary scrollable list (see globals.css).
  */
-export function TrendingRail({ events, direction, durationSeconds = 72 }: TrendingRailProps) {
+export function TrendingRail({ events, direction, durationSeconds = 120 }: TrendingRailProps) {
+  if (events.length === 0) return null;
+
   return (
     <div className="rail-mask relative w-full overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <ul
         className={cn(
-          "rail-track flex w-max gap-2.5 py-1",
+          "rail-track flex w-max gap-3 py-1.5",
           direction === "left" ? "animate-rail-left" : "animate-rail-right",
         )}
         style={{ ["--rail-duration" as string]: `${durationSeconds}s` }}
@@ -71,7 +59,7 @@ export function TrendingRail({ events, direction, durationSeconds = 72 }: Trendi
             key={`${event.id}-${index}`}
             event={event}
             // The second copy exists only to make the loop seamless.
-            ariaHidden={index >= events.length}
+            duplicate={index >= events.length}
           />
         ))}
       </ul>
@@ -79,35 +67,36 @@ export function TrendingRail({ events, direction, durationSeconds = 72 }: Trendi
   );
 }
 
-function TrendingEventPill({
-  event,
-  ariaHidden,
-}: {
-  event: TrendingEvent;
-  ariaHidden: boolean;
-}) {
+function TrendingEventPill({ event, duplicate }: { event: TrendingEvent; duplicate: boolean }) {
   const Icon = ICONS[event.icon];
   const router = useRouter();
 
   return (
-    <li aria-hidden={ariaHidden || undefined}>
+    <li aria-hidden={duplicate || undefined}>
       <button
         type="button"
-        tabIndex={ariaHidden ? -1 : undefined}
+        tabIndex={duplicate ? -1 : undefined}
         onClick={() => {
           track("trending_event_clicked", { id: event.id, category: event.category });
+          // Carries the exact question into the prediction input.
           router.push(`/predict?q=${encodeURIComponent(event.question)}&from=${event.id}`);
         }}
-        className="group flex items-center gap-3 rounded-full border border-line bg-surface/90 py-2 pl-3 pr-4 text-left transition-colors hover:border-line-strong hover:bg-elevated"
+        className={cn(
+          "group flex items-center gap-3 whitespace-nowrap rounded-full border border-line",
+          "bg-surface/80 py-2.5 pl-3 pr-5 text-left transition-all duration-300",
+          "hover:-translate-y-px hover:border-lime/30 hover:bg-elevated",
+        )}
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated text-muted transition-colors group-hover:text-lime">
-          <Icon className="size-4" aria-hidden />
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated text-faint transition-colors duration-300 group-hover:bg-lime/10 group-hover:text-lime">
+          <Icon className="size-[15px]" aria-hidden />
         </span>
-        <span className="flex flex-col">
-          <span className="whitespace-nowrap text-[13.5px] font-medium leading-tight text-fg">
-            {event.question}
+        <span className="flex flex-col gap-0.5">
+          <span className="text-[13.5px] font-medium leading-none text-fg">
+            {event.shortTitle}
           </span>
-          <span className="text-[11px] uppercase tracking-wider text-faint">{event.category}</span>
+          <span className="text-[10.5px] uppercase leading-none tracking-[0.14em] text-faint">
+            {event.category}
+          </span>
         </span>
       </button>
     </li>

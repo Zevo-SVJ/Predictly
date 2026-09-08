@@ -5,15 +5,15 @@ import { ArrowRight } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { PredictionResult } from "@/components/PredictionResult";
-import { EXAMPLE_FORECAST } from "@/lib/data/example-forecast";
+import { ShareCard } from "@/components/ShareCard";
 import { getPredictionStore } from "@/lib/store";
-import type { Forecast } from "@/lib/types";
+import type { ForecastResult } from "@/lib/types";
 import { formatPercent } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-async function loadForecast(id: string): Promise<Forecast | null> {
-  if (id === EXAMPLE_FORECAST.id) return EXAMPLE_FORECAST;
+/** Public prediction pages read straight from the database. */
+async function loadForecast(id: string): Promise<ForecastResult | null> {
   const store = await getPredictionStore();
   return store.getById(id);
 }
@@ -54,7 +54,15 @@ export default async function ForecastPage({ params }: { params: Promise<{ id: s
       <main id="main" className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-20">
         <PredictionResult forecast={forecast} />
 
-        <div className="mx-auto mt-16 max-w-3xl border-t border-line pt-8">
+        {/* Screenshot-ready card. DOM-based on purpose — no image pipeline. */}
+        <section className="mx-auto mt-16 max-w-3xl border-t border-line pt-10">
+          <h2 className="text-[13px] uppercase tracking-[0.18em] text-faint">Share this forecast</h2>
+          <div className="mt-5 max-w-xl">
+            <ShareCard forecast={forecast} />
+          </div>
+        </section>
+
+        <div className="mx-auto mt-14 max-w-3xl border-t border-line pt-8">
           <p className="text-sm text-muted">Curious about something else?</p>
           <Link
             href="/predict"

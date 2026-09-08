@@ -39,6 +39,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <head>
+        {/* Scroll reveals ship an inline opacity:0. Without JS nothing would
+            ever reveal them, so force them visible when scripting is off. */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
+      </head>
       <body className="min-h-dvh antialiased">
         <a
           href="#main"

@@ -1,4 +1,4 @@
-import type { Forecast, ResolutionStatus } from "@/lib/types";
+import type { ForecastResult, ResolutionStatus } from "@/lib/types";
 
 export interface ResolutionInput {
   status: Exclude<ResolutionStatus, "unresolved">;
@@ -17,10 +17,10 @@ export interface PredictionStore {
   readonly name: string;
   readonly isEphemeral: boolean;
 
-  save(forecast: Forecast): Promise<Forecast>;
-  getById(id: string): Promise<Forecast | null>;
-  listByUser(userId: string, limit?: number): Promise<Forecast[]>;
+  save(forecast: ForecastResult): Promise<ForecastResult>;
+  getById(id: string): Promise<ForecastResult | null>;
+  listByUser(userId: string, limit?: number): Promise<ForecastResult[]>;
   /** Attaches an anonymous forecast to a user account after they sign in. */
-  claim(id: string, userId: string): Promise<Forecast | null>;
-  resolve(id: string, resolution: ResolutionInput): Promise<Forecast | null>;
+  claim(id: string, userId: string): Promise<ForecastResult | null>;
+  resolve(id: string, resolution: ResolutionInput): Promise<ForecastResult | null>;
 }

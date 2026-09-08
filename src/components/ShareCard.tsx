@@ -1,5 +1,5 @@
 import { Logo } from "./Logo";
-import type { Forecast } from "@/lib/types";
+import type { ForecastResult } from "@/lib/types";
 import { formatDate, formatPercent, probabilityVerdict } from "@/lib/utils";
 
 /**
@@ -8,7 +8,7 @@ import { formatDate, formatPercent, probabilityVerdict } from "@/lib/utils";
  * DOM-based on purpose: it renders identically in the share sheet and in an OG
  * image route, with no image-generation pipeline to maintain for the MVP.
  */
-export function ShareCard({ forecast }: { forecast: Forecast }) {
+export function ShareCard({ forecast }: { forecast: ForecastResult }) {
   const headline =
     forecast.outcomes.find((o) => o.id === forecast.headlineOutcomeId) ?? forecast.outcomes[0];
 

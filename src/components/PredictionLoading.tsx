@@ -18,7 +18,7 @@ export function PredictionLoading({
   stage: Stage;
   detail?: string;
 }) {
-  const visible = STAGES.filter((s) => s !== "done");
+  const visible = STAGES.filter((s) => s !== "complete");
   const currentIndex = visible.indexOf(stage as (typeof visible)[number]);
 
   return (
@@ -28,8 +28,8 @@ export function PredictionLoading({
 
       <ol className="mt-10 space-y-1" aria-live="polite" aria-atomic="false">
         {visible.map((item, index) => {
-          const done = currentIndex > index || stage === "done";
-          const active = currentIndex === index && stage !== "done";
+          const done = currentIndex > index || stage === "complete";
+          const active = currentIndex === index && stage !== "complete";
           if (!done && !active) {
             return (
               <li key={item} className="flex items-center gap-3 py-2 text-sm text-faint/60">

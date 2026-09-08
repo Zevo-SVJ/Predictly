@@ -4,7 +4,7 @@ import { Bookmark, Check, Link2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { track } from "@/lib/analytics";
-import type { Forecast } from "@/lib/types";
+import type { ForecastResult } from "@/lib/types";
 
 type SaveState = "idle" | "saving" | "saved" | "needs-auth" | "error";
 
@@ -14,7 +14,7 @@ type SaveState = "idle" | "saving" | "saved" | "needs-auth" | "error";
  * Saving is what triggers authentication — a visitor gets a full forecast with
  * no account, and is only asked to sign in when they want to keep it.
  */
-export function ForecastActions({ forecast }: { forecast: Forecast }) {
+export function ForecastActions({ forecast }: { forecast: ForecastResult }) {
   const [saveState, setSaveState] = useState<SaveState>(
     forecast.userId ? "saved" : "idle",
   );

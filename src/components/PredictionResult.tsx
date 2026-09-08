@@ -1,10 +1,10 @@
-import { CircleSlash, FlaskConical, ShieldCheck, XCircle } from "lucide-react";
+import { CircleSlash, ShieldCheck, XCircle } from "lucide-react";
 import { ConfidenceBadge } from "./ConfidenceBadge";
 import { EvidenceList } from "./EvidenceList";
 import { ForecastActions } from "./ForecastActions";
 import { ForecastFactors } from "./ForecastFactors";
 import { ProbabilityDisplay } from "./ProbabilityDisplay";
-import type { Forecast } from "@/lib/types";
+import type { ForecastResult } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
 /**
@@ -17,15 +17,14 @@ export function PredictionResult({
   forecast,
   showActions = true,
 }: {
-  forecast: Forecast;
+  forecast: ForecastResult;
   showActions?: boolean;
 }) {
-  const eventDate = formatDate(forecast.resolutionDate);
+  const eventDate = formatDate(forecast.eventDate);
   const researchDate = formatDate(forecast.researchedAt);
 
   return (
     <article className="mx-auto max-w-3xl">
-      {forecast.isDevFallback ? <DevFallbackNotice forecast={forecast} /> : null}
       {forecast.resolutionStatus !== "unresolved" ? (
         <ResolutionNotice forecast={forecast} />
       ) : null}
@@ -63,7 +62,7 @@ export function PredictionResult({
       </section>
 
       <section className="mt-10">
-        <ForecastFactors up={forecast.factorsUp} down={forecast.factorsDown} />
+        <ForecastFactors up={forecast.factorsFor} down={forecast.factorsAgainst} />
       </section>
 
       <section className="mt-10">
@@ -98,28 +97,7 @@ export function PredictionResult({
   );
 }
 
-/** Loud, unmissable: this run did not perform real research. */
-function DevFallbackNotice({ forecast }: { forecast: Forecast }) {
-  return (
-    <div className="mb-8 flex items-start gap-3 rounded-card border border-hedge/40 bg-hedge/[0.06] p-4">
-      <FlaskConical className="mt-0.5 size-4 shrink-0 text-hedge" aria-hidden />
-      <div className="text-sm leading-relaxed">
-        <p className="font-medium text-hedge">Development fallback — not real research</p>
-        <p className="mt-1 text-muted">
-          No research API key is configured, so this forecast was assembled from
-          local fixtures by the{" "}
-          <code className="font-mono text-xs text-faint">{forecast.providers.research}</code>{" "}
-          and{" "}
-          <code className="font-mono text-xs text-faint">{forecast.providers.reasoning}</code>{" "}
-          providers. The sources below are synthetic and the probability is not
-          calibrated.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function ResolutionNotice({ forecast }: { forecast: Forecast }) {
+function ResolutionNotice({ forecast }: { forecast: ForecastResult }) {
   const resolved = forecast.outcomes.find((o) => o.id === forecast.resolvedOutcomeId);
   const config = {
     correct: { icon: ShieldCheck, tone: "text-yes border-yes/40 bg-yes/[0.06]", label: "Resolved correct" },

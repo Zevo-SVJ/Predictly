@@ -1,4 +1,4 @@
-import type { Forecast } from "@/lib/types";
+import type { ForecastResult } from "@/lib/types";
 import type { PredictionStore, ResolutionInput } from "./types";
 
 /**
@@ -8,30 +8,30 @@ import type { PredictionStore, ResolutionInput } from "./types";
  * per-process and therefore useless behind more than one instance — that is
  * exactly why it is labelled ephemeral and surfaced in the UI.
  */
-const globalForStore = globalThis as unknown as { __predictlyStore?: Map<string, Forecast> };
-const forecasts = (globalForStore.__predictlyStore ??= new Map<string, Forecast>());
+const globalForStore = globalThis as unknown as { __predictlyStore?: Map<string, ForecastResult> };
+const forecasts = (globalForStore.__predictlyStore ??= new Map<string, ForecastResult>());
 
 export class MemoryPredictionStore implements PredictionStore {
   readonly name = "memory";
   readonly isEphemeral = true;
 
-  async save(forecast: Forecast): Promise<Forecast> {
+  async save(forecast: ForecastResult): Promise<ForecastResult> {
     forecasts.set(forecast.id, forecast);
     return forecast;
   }
 
-  async getById(id: string): Promise<Forecast | null> {
+  async getById(id: string): Promise<ForecastResult | null> {
     return forecasts.get(id) ?? null;
   }
 
-  async listByUser(userId: string, limit = 50): Promise<Forecast[]> {
+  async listByUser(userId: string, limit = 50): Promise<ForecastResult[]> {
     return [...forecasts.values()]
       .filter((f) => f.userId === userId)
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
       .slice(0, limit);
   }
 
-  async claim(id: string, userId: string): Promise<Forecast | null> {
+  async claim(id: string, userId: string): Promise<ForecastResult | null> {
     const existing = forecasts.get(id);
     if (!existing || (existing.userId && existing.userId !== userId)) return null;
     const claimed = { ...existing, userId };
@@ -39,10 +39,10 @@ export class MemoryPredictionStore implements PredictionStore {
     return claimed;
   }
 
-  async resolve(id: string, resolution: ResolutionInput): Promise<Forecast | null> {
+  async resolve(id: string, resolution: ResolutionInput): Promise<ForecastResult | null> {
     const existing = forecasts.get(id);
     if (!existing) return null;
-    const resolved: Forecast = {
+    const resolved: ForecastResult = {
       ...existing,
       resolutionStatus: resolution.status,
       resolvedOutcomeId: resolution.resolvedOutcomeId,

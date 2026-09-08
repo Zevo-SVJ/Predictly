@@ -1,49 +1,50 @@
 import { PredictionInput } from "./PredictionInput";
-import { TrendingRail } from "./TrendingRail";
-import { getTrendingRails } from "@/lib/data/trending";
 
 /**
- * The whole value proposition above the fold: what it does, the real input, and
- * a live sense of what people are curious about.
+ * The whole proposition in one screen: a claim, one line of explanation, and
+ * the real product control.
+ *
+ * There is deliberately no announcement badge and no mock product card. The
+ * only "visual" is the tick rule beneath the input — a measuring scale from 0
+ * to 100, which is what this product actually does.
  */
 export function Hero() {
-  const [railOne, railTwo] = getTrendingRails();
-
   return (
-    <section className="relative overflow-hidden border-b border-line">
-      <div className="grid-field pointer-events-none absolute inset-0" aria-hidden />
-
-      <div className="relative mx-auto max-w-4xl px-4 pb-10 pt-14 sm:px-6 sm:pb-14 sm:pt-24">
-        <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs text-muted">
-          <span className="size-1.5 rounded-full bg-lime" aria-hidden />
-          Free for everyone during launch
-        </p>
-
-        <h1 className="mt-6 text-[2.6rem] font-semibold leading-[1.02] sm:text-6xl md:text-7xl">
+    <section className="relative">
+      <div className="mx-auto max-w-4xl px-5 pb-16 pt-16 sm:px-8 sm:pb-24 sm:pt-28">
+        <h1
+          className="animate-rise-in text-[3rem] font-semibold leading-[0.95] sm:text-[4.5rem] md:text-[5.25rem]"
+          style={{ animationDelay: "40ms" }}
+        >
           Predict what
           <br />
           happens next.
         </h1>
 
-        <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+        <p
+          className="animate-rise-in mt-7 max-w-xl text-[17px] leading-relaxed text-muted sm:text-lg"
+          style={{ animationDelay: "140ms" }}
+        >
           Ask about any future event. Predictly researches the latest
-          information and turns it into a probability-based forecast.
+          information and turns it into a probability.
         </p>
 
-        <PredictionInput className="mt-8 max-w-2xl" size="large" />
+        <div className="animate-rise-in mt-10" style={{ animationDelay: "240ms" }}>
+          <PredictionInput size="large" className="max-w-2xl" />
+        </div>
 
-        <p className="mt-3 pl-1 text-xs text-faint">
-          Try “Will GTA VI be delayed again?” or “Who will win the next F1 Grand Prix?”
-        </p>
-      </div>
-
-      <div id="worth-predicting" className="relative scroll-mt-20 pb-12 sm:pb-16">
-        <p className="mx-auto mb-3 max-w-6xl px-4 text-xs uppercase tracking-widest text-faint sm:px-6">
-          Worth predicting
-        </p>
-        <div className="space-y-2.5">
-          <TrendingRail events={railOne} direction="left" durationSeconds={80} />
-          <TrendingRail events={railTwo} direction="right" durationSeconds={95} />
+        {/* Probability scale — the brand motif, and a hint at the output. */}
+        <div
+          className="animate-rise-in mt-12 max-w-2xl select-none"
+          style={{ animationDelay: "340ms" }}
+          aria-hidden
+        >
+          <div className="tick-rule h-2.5 w-full opacity-40" />
+          <div className="mt-2 flex justify-between font-mono text-[10.5px] tracking-widest text-faint">
+            <span>0%</span>
+            <span>IMPOSSIBLE — CERTAIN</span>
+            <span>100%</span>
+          </div>
         </div>
       </div>
     </section>

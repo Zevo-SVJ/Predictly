@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { isSupabaseConfigured } from "@/lib/config";
 import { getPredictionStore } from "@/lib/store";
 import { getCurrentUser } from "@/lib/supabase/server";
-import type { Forecast } from "@/lib/types";
+import type { ForecastResult } from "@/lib/types";
 import { formatDate, formatPercent } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -71,7 +71,7 @@ export default async function HistoryPage() {
   );
 }
 
-function HistoryRow({ forecast }: { forecast: Forecast }) {
+function HistoryRow({ forecast }: { forecast: ForecastResult }) {
   const headline =
     forecast.outcomes.find((o) => o.id === forecast.headlineOutcomeId) ?? forecast.outcomes[0];
 
@@ -104,7 +104,7 @@ function HistoryRow({ forecast }: { forecast: Forecast }) {
   );
 }
 
-function ResolutionChip({ forecast }: { forecast: Forecast }) {
+function ResolutionChip({ forecast }: { forecast: ForecastResult }) {
   const config = {
     unresolved: { icon: null, label: "Open", className: "text-faint" },
     correct: { icon: CheckCircle2, label: "Correct", className: "text-yes" },

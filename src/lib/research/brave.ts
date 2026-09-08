@@ -8,7 +8,7 @@ import {
   type ResearchProvider,
   type SearchQuery,
   type SearchResult,
-} from "./types";
+} from "./provider";
 
 const BRAVE_SEARCH = "https://api.search.brave.com/res/v1/web/search";
 

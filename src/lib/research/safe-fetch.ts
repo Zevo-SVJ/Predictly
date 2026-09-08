@@ -1,4 +1,4 @@
-import { ResearchProviderError } from "./types";
+import { ResearchProviderError } from "./provider";
 
 const BLOCKED_HOSTNAMES = new Set([
   "localhost",

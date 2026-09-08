@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils";
 
 interface PredictionInputProps {
   /**
-   * Seeds the field on mount, e.g. so a failed question can be edited rather
-   * than retyped. Remount with a `key` to reseed.
+   * Seeds the field on mount — a trending question, or a failed one being
+   * edited. Remount with a `key` to reseed.
    */
   initialValue?: string;
-  /** When provided, the component runs the flow in place instead of navigating. */
+  /** When provided, runs the flow in place instead of navigating. */
   onSubmit?: (question: string) => void;
   autoFocus?: boolean;
   pending?: boolean;
@@ -23,8 +23,11 @@ interface PredictionInputProps {
 const MAX_LENGTH = 240;
 
 /**
- * The single input the whole product is built around. No model picker, no
- * category select, no depth slider — the system decides all of that.
+ * The single control the whole product is built around.
+ *
+ * No model picker, no category, no depth slider — Predictly decides all of it.
+ * The lime ring on focus is the only chrome that appears, so the field reads as
+ * a physical object that lights up rather than a form input.
  */
 export function PredictionInput({
   initialValue = "",
@@ -36,6 +39,7 @@ export function PredictionInput({
 }: PredictionInputProps) {
   const [question, setQuestion] = useState(initialValue);
   const [error, setError] = useState<string | null>(null);
+  const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -61,8 +65,9 @@ export function PredictionInput({
     <form onSubmit={handleSubmit} className={cn("w-full", className)} noValidate>
       <div
         className={cn(
-          "edge-lit group flex items-center gap-2 rounded-full border border-line-strong bg-elevated transition-colors focus-within:border-lime/50",
-          large ? "p-1.5 pl-5" : "p-1 pl-4",
+          "edge-lit flex items-center gap-2 rounded-2xl border bg-elevated transition-all duration-300",
+          focused ? "border-lime/45 ring-4 ring-lime/10" : "border-line-strong",
+          large ? "p-2 pl-5 sm:pl-6" : "p-1.5 pl-4",
         )}
       >
         <label htmlFor="prediction-question" className="sr-only">
@@ -80,6 +85,8 @@ export function PredictionInput({
           maxLength={MAX_LENGTH}
           disabled={pending}
           value={question}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           onChange={(event) => {
             setQuestion(event.target.value);
             if (error) setError(null);
@@ -89,15 +96,16 @@ export function PredictionInput({
           aria-invalid={error ? true : undefined}
           className={cn(
             "min-w-0 flex-1 bg-transparent text-fg outline-none disabled:opacity-60",
-            large ? "py-2.5 text-base sm:text-lg" : "py-2 text-[15px]",
+            large ? "py-3 text-[16px] sm:text-[17px]" : "py-2.5 text-[15px]",
           )}
         />
         <button
           type="submit"
           disabled={pending}
           className={cn(
-            "inline-flex shrink-0 items-center gap-1.5 rounded-full bg-lime font-medium text-lime-ink transition-colors hover:bg-lime-dim disabled:opacity-70",
-            large ? "px-5 py-2.5 text-[15px]" : "px-4 py-2 text-sm",
+            "inline-flex shrink-0 items-center gap-2 rounded-xl bg-lime font-medium text-lime-ink",
+            "transition-all duration-200 hover:bg-lime-dim active:scale-[0.97] disabled:opacity-70",
+            large ? "px-5 py-3 text-[15px] sm:px-6" : "px-4 py-2.5 text-sm",
           )}
         >
           {pending ? (
@@ -108,14 +116,14 @@ export function PredictionInput({
           ) : (
             <>
               <span>Predict</span>
-              <ArrowRight className="size-4 transition-transform group-focus-within:translate-x-0.5" aria-hidden />
+              <ArrowRight className="size-4" aria-hidden />
             </>
           )}
         </button>
       </div>
 
       {error ? (
-        <p id="prediction-error" role="alert" className="mt-2 pl-5 text-sm text-no">
+        <p id="prediction-error" role="alert" className="mt-2.5 pl-1 text-sm text-no">
           {error}
         </p>
       ) : null}

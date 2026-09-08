@@ -7,13 +7,13 @@ import { PredictionInput } from "./PredictionInput";
 import { PredictionLoading } from "./PredictionLoading";
 import { PredictionResult } from "./PredictionResult";
 import { TrendingRail } from "./TrendingRail";
-import { getTrendingRails } from "@/lib/data/trending";
-import type { Forecast, ForecastErrorCode, ForecastStreamEvent, Stage } from "@/lib/types";
+import { getTrendingRails } from "@/lib/trending";
+import type { ForecastErrorCode, ForecastResult, ForecastStreamEvent, Stage } from "@/lib/types";
 
 type FlowState =
   | { phase: "idle"; seed?: string }
   | { phase: "running"; question: string; stage: Stage; detail?: string }
-  | { phase: "result"; forecast: Forecast }
+  | { phase: "result"; forecast: ForecastResult }
   | { phase: "error"; question: string; code: ForecastErrorCode; message: string; hint?: string };
 
 /**
@@ -41,7 +41,7 @@ export function PredictFlow({ initialQuestion }: { initialQuestion?: string }) {
    */
   const run = useCallback(async (question: string, signal: AbortSignal) => {
     try {
-      const response = await fetch("/api/forecast", {
+      const response = await fetch("/api/predict", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ question }),
@@ -77,15 +77,14 @@ export function PredictFlow({ initialQuestion }: { initialQuestion?: string }) {
               : current,
           );
         } else if (event.type === "result") {
-          setState({ phase: "result", forecast: event.forecast });
+          setState({ phase: "result", forecast: event.prediction });
           track("prediction_completed", {
-            id: event.forecast.id,
-            category: event.forecast.category,
-            confidence: event.forecast.confidence,
-            devFallback: event.forecast.isDevFallback,
+            id: event.prediction.id,
+            category: event.prediction.category,
+            confidence: event.prediction.confidence,
           });
           // Give the forecast a real URL without a full navigation.
-          window.history.replaceState(null, "", `/predict/${event.forecast.id}`);
+          window.history.replaceState(null, "", `/predict/${event.prediction.id}`);
         } else if (event.type === "error") {
           setState({ phase: "error", question, code: event.code, message: event.message, hint: event.hint });
           track("prediction_failed", { code: event.code });

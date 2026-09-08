@@ -8,7 +8,7 @@ import {
   type ResearchProvider,
   type SearchQuery,
   type SearchResult,
-} from "./types";
+} from "./provider";
 
 const TAVILY_SEARCH = "https://api.tavily.com/search";
 const TAVILY_EXTRACT = "https://api.tavily.com/extract";

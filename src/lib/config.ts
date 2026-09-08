@@ -111,9 +111,18 @@ export const serverEnv = {
   researchProvider: () => env("RESEARCH_PROVIDER"),
 };
 
+/**
+ * Browser-safe Supabase configuration.
+ *
+ * Supabase renamed the anon key to the publishable key; both names are read so
+ * a project on either naming works. These are literal member accesses because
+ * that is the form Next statically replaces in the client bundle.
+ */
 export const publicEnv = {
-  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  supabaseUrl: clean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+  supabaseAnonKey:
+    clean(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) ??
+    clean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
 };
 
 /** Supabase is optional in development; the app degrades to an in-memory store. */

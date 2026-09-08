@@ -1,22 +1,18 @@
 # Predictly
 
 Ask about any future event. Predictly researches the latest information and
-turns it into a probability-based forecast.
+turns it into a probability.
 
-The whole product is one action — **event → research → evidence → forecast →
-probability**. It is not a chatbot, not a betting platform, and it takes no bets.
+Event → research → evidence → forecast → probability. It is not a chatbot, not a
+betting platform, and it takes no bets.
 
 ## Running it
 
 ```bash
 npm install
-cp .env.example .env.local   # every key is optional; see below
+cp .env.example .env.local   # fill in the required keys — see below
 npm run dev
 ```
-
-Open <http://localhost:3000>. With no keys set the app runs end to end on
-clearly-labelled development fallbacks — the pipeline, the UI and the share
-links all work, but no web research happens and every forecast says so.
 
 ```bash
 npm run build      # production build
@@ -26,98 +22,89 @@ npm run lint       # eslint
 
 ## Environment
 
+Predictly performs real web research and real reasoning. **Without the provider
+keys it returns a `not_configured` error rather than inventing a forecast.**
+There is no offline fallback that produces fake evidence — by design.
+
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `TAVILY_API_KEY` | for real research | Web search + extraction. Preferred provider. |
-| `BRAVE_SEARCH_API_KEY` | alternative | Search only; pages are fetched and extracted locally. |
-| `RESEARCH_PROVIDER` | no | Force `tavily`, `brave` or `dev-fallback`. |
-| `ANTHROPIC_API_KEY` | for real forecasts | Powers the three reasoning steps. |
+| `ANTHROPIC_API_KEY` | **yes** | Event understanding, per-source evidence assessment, written explanation. |
 | `ANTHROPIC_MODEL` | no | Defaults to `claude-opus-5`. |
-| `NEXT_PUBLIC_SUPABASE_URL` | for accounts | Postgres + auth. |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | for accounts | Browser client. |
-| `SUPABASE_SERVICE_ROLE_KEY` | no | Server-only. Never exposed to the browser. |
-| `ADMIN_RESOLUTION_SECRET` | no | Enables the manual resolution endpoint. Unset ⇒ endpoint returns 404. |
-| `NEXT_PUBLIC_SITE_URL` | for production | Canonical and share URLs. |
+| `TAVILY_API_KEY` | **one of** | Web search + extraction. Preferred. |
+| `BRAVE_SEARCH_API_KEY` | **one of** | Search only; pages fetched and extracted locally. |
+| `RESEARCH_PROVIDER` | no | Force `tavily` or `brave`. |
+| `NEXT_PUBLIC_SUPABASE_URL` | for persistence | Postgres + auth. |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | for persistence | Browser client. `NEXT_PUBLIC_SUPABASE_ANON_KEY` also accepted. |
+| `SUPABASE_SERVICE_ROLE_KEY` | no | Server-only. Never prefix with `NEXT_PUBLIC_`. |
+| `ADMIN_RESOLUTION_SECRET` | no | Enables manual resolution. Unset ⇒ endpoint 404s. |
+| `NEXT_PUBLIC_SITE_URL` | no | Canonical/share URLs. Falls back to the Vercel host, then localhost. |
 
-Apply `supabase/schema.sql` to create the tables and row-level security
-policies. Predictions are world-readable (share links are a product feature)
-and writable only by their owner.
+Without Supabase the app still runs: forecasts are held in memory for the life
+of the server process, so share links work in one instance but not across
+deploys, and sign-in is disabled with an explanatory message.
+
+Apply `supabase/schema.sql` (or `supabase/migrations/`) to create the tables and
+row-level security policies. Predictions are world-readable — share links are a
+product feature — and writable only by their owner.
 
 ## How a forecast is produced
 
-The probability is **not** a number a language model was asked to pick. The
-model interprets the question and judges each source; the arithmetic happens in
-plain TypeScript so it is reproducible and inspectable.
+The probability is **not** a number a model was asked to pick. The model
+interprets the question and judges each source; the arithmetic happens in plain
+TypeScript so it is reproducible and inspectable.
 
 ```
-ResearchProvider              ForecastEngine
-  ├── search()                  ├── understandEvent()      → outcomes + base rates   (model)
-  ├── fetch()                   ├── gatherEvidence()       → search, dedupe, rank    (research)
-  └── extract()                 ├── evaluateEvidence()     → per-source judgement    (model)
-                                ├── calculateProbability() → aggregation             (no model)
-                                └── generateForecast()     → explanation             (model)
+src/lib/research/            src/lib/forecast/
+  provider.ts   contract       event.ts       outcomes + base rates   (model)
+  tavily.ts     search/extract evidence.ts    gather → read → judge   (research + model)
+  brave.ts      search only    probability.ts aggregation             (no model)
+  normalize.ts  one shape      generate.ts    explanation             (model)
+  dedupe.ts     collapse dupes engine.ts      orchestration
 ```
 
-`calculateProbability` (`src/lib/forecast/probability.ts`) works in log-odds
-space: it starts from the structural base rate, weights each source by
-`strength × reliability × relevance × recency`, scores each outcome against its
-strongest rival, and damps the total shift with `tanh` so a pile of weak,
-correlated sources cannot manufacture a 99% forecast. Results are clamped away
-from 0 and 1 — nothing here is certain.
+`calculateProbability` works in log-odds space: it starts from the structural
+base rate, weights each source by `strength × reliability × relevance ×
+recency`, scores each outcome against its strongest rival, and damps the total
+shift with `tanh` so a pile of weak, correlated sources cannot manufacture a
+99% forecast. Results are clamped away from 0 and 1.
+
+Deduplication matters to that arithmetic: the same story syndicated by ten
+outlets is one piece of evidence, not ten. `dedupe.ts` collapses by canonical
+URL and by headline fingerprint before anything is weighed.
 
 **Confidence is not probability.** Probability is about the event; confidence is
 about how much usable, recent, agreeing evidence the forecast rests on. A
 well-supported 50/50 is a high-confidence forecast; an 80% call built on two
-stale posts is not.
+stale posts is not. Confidence is capped at medium when the evidence is old.
 
-## Layout
+## Routes
 
-```
-src/
-  app/                    routes: / · /predict · /predict/[id] · /history · /login
-    api/forecast/         NDJSON stream of real pipeline stages
-    api/predictions/[id]/claim     attach an anonymous forecast to an account
-    api/admin/.../resolve          manual resolution (secret-gated)
-  components/             Navbar · Hero · TrendingRail · PredictionInput ·
-                          PredictionLoading · PredictionResult · ProbabilityDisplay ·
-                          EvidenceList · ForecastFactors · ConfidenceBadge · ShareCard
-  lib/
-    research/             ResearchProvider: tavily · brave · dev-fallback
-    llm/                  ReasoningProvider: anthropic · dev-fallback
-    forecast/             engine · probability · prompts · schemas
-    store/                PredictionStore: supabase · memory
-    data/                 trending seed set · landing example
-```
+| Route | What it does |
+| --- | --- |
+| `/` | Landing page. |
+| `/predict` | The forecasting surface. `?q=` starts a run immediately. |
+| `/predict/[id]` | Public, shareable forecast with dynamic metadata. |
+| `/history` | Saved forecasts for the signed-in user. |
+| `/login` | Email magic link + Google. |
+| `POST /api/predict` | Runs the pipeline, streams real stage events as NDJSON. |
+| `POST /api/predictions/[id]/claim` | Attaches an anonymous forecast to an account. |
+| `POST /api/admin/predictions/[id]/resolve` | Manual resolution, secret-gated. |
 
-Providers are resolved in one place each (`research/index.ts`, `llm/index.ts`),
-so swapping one is a single edit and nothing above that layer changes.
+## Trending predictions
 
-## Development fallbacks
-
-Missing credentials degrade rather than break, and never pretend:
-
-- **No research key** → synthetic fixtures. Source links point at `/dev-research`,
-  publishers read "Development fixture", and the forecast carries a banner
-  saying no research was performed.
-- **No Anthropic key** → deterministic local heuristics, flagged the same way.
-- **No Supabase** → forecasts live in memory for the life of the process;
-  sign-in is disabled with an explanatory message.
-
-Mocked evidence is never presented as real research.
+`src/lib/trending/` holds a `TrendingEventsProvider` behind a curated seed set.
+Entries carry `publishedAt` / `expiresAt` and are filtered once they expire, so
+the list decays instead of going quietly stale. The UI says "Trending
+predictions", never "live" — swapping in a live provider is one file.
 
 ## Product decisions
 
-- **Free until 22 September 2026.** `FREE_MODE` in `src/lib/config.ts` is the
-  single switch a future billing layer would read. No Stripe, no tiers, no
-  pricing UI.
-- **The landing rails are a curated seed set**, labelled "Worth predicting"
-  rather than "Trending", because nothing is fetched live yet.
-  `getTrendingEvents()` is the seam for a real pipeline.
-- **The landing example forecast is hand-written**, labelled as an example, and
-  cites real articles with their real URLs and dates.
-- **Resolution architecture exists; automation does not.** The schema and a
-  secret-gated endpoint are in place; automatic resolution is deliberately out
-  of scope for the MVP.
+- **Free during launch.** `FREE_MODE` in `src/lib/config.ts` is the single flag a
+  future billing layer would read. No Stripe, no tiers, no pricing UI.
+- **No fake product imagery.** The landing page has no mock dashboard and no
+  example forecast card. The hero's only graphic is a 0–100 probability rule.
+- **No fabricated evidence, ever.** Missing credentials produce a configuration
+  error; failed research produces an honest failure state.
 
 ## Safety
 

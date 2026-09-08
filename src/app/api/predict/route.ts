@@ -8,45 +8,66 @@ import { ForecastError, type ForecastStreamEvent, type Stage } from "@/lib/types
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-/** Research plus three model calls; give it room without hanging forever. */
-export const maxDuration = 120;
+/** Research plus three model calls; generous, but bounded. */
+export const maxDuration = 300;
 
 const RequestSchema = z.object({
-  question: z.string().trim().min(8, "Ask about a specific future event.").max(240),
+  question: z
+    .string()
+    .trim()
+    .min(8, "Ask about a specific future event.")
+    .max(240, "That question is too long to forecast reliably."),
 });
+
+/** Non-streaming failures share one shape with the stream's `error` event. */
+function failure(code: string, message: string, hint: string | undefined, status: number, headers?: HeadersInit) {
+  return NextResponse.json({ code, message, hint }, { status, headers });
+}
 
 /**
  * Runs the forecasting pipeline and streams stage updates as NDJSON.
  *
- * One JSON object per line, so the client can render real progress without a
- * websocket and without pretending to make progress it hasn't made.
+ * One JSON object per line. Stages are emitted when the server actually
+ * reaches them, so the client never invents progress it hasn't made.
  */
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const parsed = RequestSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { code: "malformed_question", message: parsed.error.issues[0]?.message ?? "Invalid question." },
-      { status: 400 },
+    return failure(
+      "malformed_question",
+      parsed.error.issues[0]?.message ?? "That isn't a question we can forecast.",
+      "Ask about a single, specific future event.",
+      400,
     );
   }
 
   const user = await getCurrentUser();
   const limit = checkRateLimit(clientKey(request.headers, user?.id ?? null), Boolean(user));
   if (!limit.allowed) {
-    return NextResponse.json(
-      {
-        code: "rate_limited",
-        message: "You've hit the forecast limit for now.",
-        hint: `Try again after ${new Date(limit.resetAt).toUTCString()}.`,
-      },
-      { status: 429, headers: { "retry-after": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } },
+    return failure(
+      "rate_limited",
+      "You've hit the forecast limit for now.",
+      `Try again after ${new Date(limit.resetAt).toUTCString()}.`,
+      429,
+      { "retry-after": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) },
     );
+  }
+
+  // Provider resolution happens before the stream opens so an unconfigured
+  // deployment returns a plain 503 rather than a stream that immediately dies.
+  let engine: ForecastEngine;
+  try {
+    engine = new ForecastEngine();
+  } catch (error) {
+    if (error instanceof ForecastError) {
+      return failure(error.code, error.message, error.hint, 503);
+    }
+    return failure("internal_error", "Predictly could not start a forecast.", undefined, 500);
   }
 
   const encoder = new TextEncoder();
   const store = await getPredictionStore();
-  const engine = new ForecastEngine();
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -57,21 +78,21 @@ export async function POST(request: Request) {
       };
 
       try {
-        const forecast = await engine.run({
+        const prediction = await engine.run({
           question: parsed.data.question,
           userId: user?.id ?? null,
           onProgress: (stage: Stage, detail?: string) => send({ type: "stage", stage, detail }),
         });
 
-        // Persistence failure must not throw away a completed forecast: the user
-        // still sees it, they just can't link to it later.
+        // Persistence failure must not throw away completed research: the user
+        // still sees the forecast, they just can't link to it later.
         try {
-          await store.save(forecast);
+          await store.save(prediction);
         } catch (error) {
-          console.error("Could not persist forecast:", error);
+          console.error("Could not persist prediction:", error);
         }
 
-        send({ type: "result", forecast });
+        send({ type: "result", prediction });
       } catch (error) {
         if (error instanceof ForecastError) {
           send({ type: "error", code: error.code, message: error.message, hint: error.hint });

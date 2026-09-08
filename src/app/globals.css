@@ -6,24 +6,22 @@
   --color-surface: #101218;
   --color-elevated: #151821;
   --color-line: rgba(255, 255, 255, 0.08);
-  --color-line-strong: rgba(255, 255, 255, 0.16);
+  --color-line-strong: rgba(255, 255, 255, 0.14);
   --color-fg: #f5f7fa;
   --color-muted: #9298a6;
-  --color-faint: #6a707d;
+  --color-faint: #6b7180;
 
   --color-lime: #c7f36b;
-  --color-lime-dim: #a8d94a;
+  --color-lime-dim: #b2e04f;
   --color-lime-ink: #0b1003;
 
-  --color-yes: #4ade80;
-  --color-no: #f87171;
-  --color-hedge: #fbbf24;
+  --color-yes: #5ddc94;
+  --color-no: #f2777a;
+  --color-hedge: #e8b84b;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
-
-  --radius-card: 14px;
 }
 
 /* ------------------------------------------------------------------- base */
@@ -35,6 +33,7 @@
   html {
     color-scheme: dark;
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
@@ -47,11 +46,11 @@
     overflow-x: hidden;
   }
 
-  /* Editorial headline treatment: tight tracking, no gradient text. */
+  /* Editorial headline treatment: tight tracking, optical balance, no gradients. */
   h1,
   h2,
   h3 {
-    letter-spacing: -0.032em;
+    letter-spacing: -0.035em;
     text-wrap: balance;
   }
 
@@ -61,7 +60,7 @@
 
   :focus-visible {
     outline: 2px solid var(--color-lime);
-    outline-offset: 2px;
+    outline-offset: 3px;
     border-radius: 4px;
   }
 
@@ -77,31 +76,33 @@
 
 /* ------------------------------------------------------------- components */
 @layer components {
-  /* Fine top highlight that reads as light catching an edge. */
+  /* Fine top highlight — light catching a physical edge, not a glow. */
   .edge-lit {
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.06),
-      0 20px 50px -30px rgba(0, 0, 0, 0.9);
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 24px 60px -40px rgba(0, 0, 0, 0.95);
   }
 
-  /* Faint grid used behind the hero. Not a glow, not a blob. */
-  .grid-field {
-    background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 20%, transparent 75%);
+  /*
+   * Probability rule: the recurring brand motif. A measuring scale from 0 to
+   * 100, drawn in hairlines. Native to forecasting, and honest — it is a ruler,
+   * not a screenshot of a product that doesn't exist.
+   */
+  .tick-rule {
+    background-image: repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.16) 0 1px,
+      transparent 1px 100%
+    );
+    background-size: calc(100% / 40) 100%;
   }
 
-  /* Fade both edges so pills dissolve rather than being sliced off. The fade
-     is a fixed width, not a percentage, so it reads the same on a phone as on
-     a wide desktop. */
   .rail-mask {
     mask-image: linear-gradient(
       to right,
       transparent,
-      #000 44px,
-      #000 calc(100% - 44px),
+      #000 56px,
+      #000 calc(100% - 56px),
       transparent
     );
   }
@@ -110,15 +111,15 @@
 /* ------------------------------------------------------------- animations */
 
 /*
- * Entrances are CSS rather than a JS animation library on purpose: the markup
- * is identical on the server and after hydration (no `useReducedMotion()`
- * branch to mismatch), the content still appears if JavaScript never runs, and
- * the reduced-motion block at the bottom of this file governs all of it.
+ * Entrances on content that must survive without JavaScript are CSS, so the
+ * markup is identical on the server and after hydration and the text is
+ * readable even if hydration never happens. Framer Motion is reserved for
+ * scroll-linked and interaction motion, where JS is a precondition anyway.
  */
 @keyframes rise-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 10px, 0);
   }
   to {
     opacity: 1;
@@ -127,7 +128,7 @@
 }
 
 .animate-rise-in {
-  animation: rise-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes slide-in {
@@ -142,11 +143,10 @@
 }
 
 .animate-slide-in {
-  animation: slide-in 0.25s ease-out both;
+  animation: slide-in 0.28s ease-out both;
 }
 
-/* The bar's final width is inline; scaleX animates the reveal so no layout
-   thrash and no JS is involved. */
+/* Final width is inline; scaleX animates the reveal, so no layout thrash. */
 @keyframes bar-reveal {
   from {
     transform: scaleX(0);
@@ -158,7 +158,7 @@
 
 .animate-bar-reveal {
   transform-origin: left center;
-  animation: bar-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  animation: bar-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
 @keyframes rail-left {
@@ -180,11 +180,11 @@
 }
 
 .animate-rail-left {
-  animation: rail-left var(--rail-duration, 70s) linear infinite;
+  animation: rail-left var(--rail-duration, 110s) linear infinite;
 }
 
 .animate-rail-right {
-  animation: rail-right var(--rail-duration, 70s) linear infinite;
+  animation: rail-right var(--rail-duration, 110s) linear infinite;
 }
 
 .rail-track:hover,
@@ -193,13 +193,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 
   /* Rails become ordinary horizontally scrollable lists. */

@@ -21,9 +21,15 @@ export type Confidence = "low" | "medium" | "high";
 
 export type ResolutionStatus = "unresolved" | "correct" | "wrong" | "cancelled";
 
+/** Terminal state of a forecast row. */
+export type ForecastStatus = "complete" | "unresolved_error";
+
+/** Which side of the question a source lands on. */
+export type Stance = "supports" | "opposes" | "neutral";
+
 /** A candidate answer to the user's question. */
 export interface Outcome {
-  /** Stable slug, e.g. "yes" / "no" / "real-madrid". */
+  /** Stable slug, e.g. "yes" / "no" / "kylian-mbappe". */
   id: string;
   /** Human label shown in the UI. */
   label: string;
@@ -31,7 +37,12 @@ export interface Outcome {
   probability: number;
 }
 
-/** One researched source, after extraction and scoring. */
+/**
+ * One researched source, after extraction and scoring.
+ *
+ * Every field here is derived from a document that was actually retrieved from
+ * the web. Nothing in this shape is ever synthesised.
+ */
 export interface EvidenceItem {
   id: string;
   title: string;
@@ -42,25 +53,28 @@ export interface EvidenceItem {
   summary: string;
   /** Which outcome this evidence points toward, by outcome id. */
   supportsOutcomeId: string | null;
+  /** Stance relative to the forecast's headline outcome. */
+  stance: Stance;
   /** How strongly it points there, 0–1. */
   strength: number;
   /** Source quality / independence, 0–1. */
   reliability: number;
   /** Topical relevance to the question, 0–1. */
   relevance: number;
-  /** True when produced by the development fallback rather than real research. */
-  isDevFallback: boolean;
 }
 
 export interface ForecastFactor {
-  /** Short label, e.g. "Rockstar has delayed every major title since 2013". */
+  /** Short label, e.g. "Yamal has started every game of the campaign". */
   text: string;
   /** Weight of this factor on the final number, 0–1, used for the bar width. */
   weight: number;
 }
 
-/** The full, presentable forecast. */
-export interface Forecast {
+/**
+ * The complete, presentable forecast — the single contract shared by the
+ * engine, the API, the database and every component.
+ */
+export interface ForecastResult {
   id: string;
   slug: string;
   question: string;
@@ -70,38 +84,43 @@ export interface Forecast {
   outcomes: Outcome[];
   /** Id of the outcome with the highest probability. */
   headlineOutcomeId: string;
+  /** Human label of that outcome, denormalised for convenience. */
+  outcome: string;
   /** Probability of the headline outcome, 0–1. */
   probability: number;
   confidence: Confidence;
   /** Prose explanation grounded in the evidence below. */
   reasoning: string;
-  factorsUp: ForecastFactor[];
-  factorsDown: ForecastFactor[];
+  factorsFor: ForecastFactor[];
+  factorsAgainst: ForecastFactor[];
   evidence: EvidenceItem[];
-  /** ISO date the event is expected to resolve, when known. */
-  resolutionDate: string | null;
+  /** ISO date the event itself is expected to happen, when known. */
+  eventDate: string | null;
+  status: ForecastStatus;
   resolutionStatus: ResolutionStatus;
   resolvedOutcomeId: string | null;
   resolutionSource: string | null;
+  /** ISO timestamp the forecast was resolved, if it has been. */
   resolvedAt: string | null;
   researchedAt: string;
   createdAt: string;
   userId: string | null;
-  /** True when any part of the pipeline ran on a development fallback. */
-  isDevFallback: boolean;
-  /** Named providers actually used, surfaced in the UI for honesty. */
+  /** Which providers actually produced this forecast. Shown for transparency. */
   providers: { research: string; reasoning: string };
 }
 
 /** Reasons a forecast can legitimately fail. Each maps to a specific UI state. */
 export type ForecastErrorCode =
+  | "not_configured"
   | "malformed_question"
   | "not_about_future"
   | "ambiguous_event"
+  | "no_search_results"
   | "insufficient_evidence"
   | "research_failed"
   | "provider_timeout"
   | "rate_limited"
+  | "storage_failed"
   | "internal_error";
 
 export class ForecastError extends Error {
@@ -115,30 +134,32 @@ export class ForecastError extends Error {
   }
 }
 
-/** Pipeline stages, streamed to the client so the loading UI reflects reality. */
+/**
+ * Pipeline stages, streamed to the client.
+ *
+ * The client never advances these on a timer — each one is emitted when the
+ * server actually reaches it.
+ */
 export const STAGES = [
   "understanding",
-  "searching",
-  "reading",
-  "weighing",
+  "researching",
+  "analyzing",
   "forecasting",
-  "done",
+  "complete",
 ] as const;
 
 export type Stage = (typeof STAGES)[number];
 
 export const STAGE_LABEL: Record<Stage, string> = {
   understanding: "Understanding the event",
-  searching: "Searching recent sources",
-  reading: "Reading what was found",
-  weighing: "Comparing evidence",
-  forecasting: "Estimating probabilities",
-  done: "Forecast ready",
+  researching: "Searching recent sources",
+  analyzing: "Weighing the evidence",
+  forecasting: "Estimating the probability",
+  complete: "Forecast ready",
 };
 
-/** Events streamed over NDJSON from `POST /api/forecast`. */
+/** Events streamed over NDJSON from `POST /api/predict`. */
 export type ForecastStreamEvent =
   | { type: "stage"; stage: Stage; detail?: string }
-  | { type: "sources"; count: number }
-  | { type: "result"; forecast: Forecast }
+  | { type: "result"; prediction: ForecastResult }
   | { type: "error"; code: ForecastErrorCode; message: string; hint?: string };

@@ -43,7 +43,7 @@ Rules:
 
 /** Renders the numbered source list the evaluation stage reads. */
 export function renderSourceList(
-  sources: { title: string; sourceName: string; publishedAt: string | null; text: string }[],
+  sources: readonly { title: string; sourceName: string; publishedAt: string | null; text: string }[],
 ): string {
   return sources
     .map((source, index) => {

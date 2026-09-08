@@ -184,6 +184,3 @@ export function scoreConfidence(input: {
   if (score < 0.68) return "medium";
   return "high";
 }
-
-/** Minimum viable corpus. Below this the engine refuses rather than guesses. */
-export const MIN_USABLE_SOURCES = 2;

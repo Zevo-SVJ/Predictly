@@ -11,6 +11,10 @@ import type { ForecastErrorCode } from "@/lib/types";
  * successful.
  */
 const COPY: Record<ForecastErrorCode, { title: string; body: string }> = {
+  not_configured: {
+    title: "Predictly isn't fully configured",
+    body: "This deployment is missing a research or reasoning API key, so Predictly cannot do the work a forecast requires. Rather than invent a number, it stops here.",
+  },
   malformed_question: {
     title: "That's not quite a question about an event",
     body: "Predictly works best with a specific future occurrence — something that will clearly either happen or not.",
@@ -22,6 +26,10 @@ const COPY: Record<ForecastErrorCode, { title: string; body: string }> = {
   ambiguous_event: {
     title: "This event is too ambiguous to forecast",
     body: "There's no clear way to tell whether it happened. Add a deadline, or say what would count as it happening.",
+  },
+  no_search_results: {
+    title: "We couldn't find anything to work from",
+    body: "The search came back empty for this event. That usually means it's phrased in a way the web doesn't recognise yet.",
   },
   insufficient_evidence: {
     title: "We couldn't make a reliable forecast",
@@ -38,6 +46,10 @@ const COPY: Record<ForecastErrorCode, { title: string; body: string }> = {
   rate_limited: {
     title: "You've hit the limit for now",
     body: "Predictly is free during launch, which means a cap on how fast forecasts can run. Come back shortly.",
+  },
+  storage_failed: {
+    title: "The forecast couldn't be saved",
+    body: "The research completed, but Predictly couldn't write it to the database, so there's no link to share.",
   },
   internal_error: {
     title: "Something broke on our side",
