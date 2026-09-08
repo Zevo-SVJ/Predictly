@@ -1,15 +1,15 @@
 import { QuestionInput } from "./QuestionInput";
+import { SignalField } from "./SignalField";
 import { getTrendingEvents } from "@/lib/trending";
 
 /**
  * The hero is the product, not a picture of it.
  *
- * No badge, no mock UI, no cards floating beside the input. The type dominates
- * but is sized so the input keeps visual weight and the next section is visible
- * below the fold — the composition decides the scale, not the maximum.
+ * No badge, no mock dashboard, and no probability rule: asking the visitor to
+ * look at a 0–100 scale here confuses their own guess with Predictly's
+ * forecast, which is the one distinction this page has to keep clear.
  *
- * Exactly one example is ever on screen: it cycles through the input's
- * placeholder while the field is empty.
+ * The only atmosphere is the signal field drifting behind the type.
  */
 export function Hero() {
   const examples = getTrendingEvents().slice(0, 5).map((event) => event.question);
@@ -17,11 +17,11 @@ export function Hero() {
   // Height is forced only from sm up. On a phone the content decides it, so the
   // input is never pushed below the fold by decorative space.
   return (
-    <section className="grain relative flex flex-col justify-center overflow-hidden sm:min-h-[82vh]">
+    <section className="grain relative flex flex-col justify-center overflow-hidden sm:min-h-[84vh]">
       <div className="rule-field pointer-events-none absolute inset-0" aria-hidden />
-      <BackgroundTrace />
+      <SignalField />
 
-      <div className="container-canvas relative pb-14 pt-10 sm:pb-16 sm:pt-16">
+      <div className="container-canvas relative pb-16 pt-12 sm:pb-20 sm:pt-16">
         <p className="eyebrow animate-rise-in" style={{ animationDelay: "40ms" }}>
           Forecast the future
         </p>
@@ -34,62 +34,17 @@ export function Hero() {
         </h1>
 
         <p
-          className="animate-rise-in mt-7 max-w-[42ch] leading-relaxed text-muted"
+          className="animate-rise-in mt-7 max-w-[44ch] leading-relaxed text-muted"
           style={{ fontSize: "var(--text-lead)", animationDelay: "180ms" }}
         >
           Ask about a future event. Predictly researches what&apos;s happening
-          now and turns the evidence into a forecast.
+          now and turns the evidence into a probability.
         </p>
 
         <div className="animate-rise-in mt-10 max-w-[62rem]" style={{ animationDelay: "260ms" }}>
           <QuestionInput size="hero" examples={examples} />
         </div>
-
-        <div
-          className="animate-rise-in mt-10 max-w-[62rem] select-none"
-          style={{ animationDelay: "340ms" }}
-          aria-hidden
-        >
-          <div className="tick-rule h-2.5 w-full opacity-40" />
-          <div className="mt-2.5 flex justify-between font-mono text-[10px] tracking-[0.18em] text-faint">
-            <span>0 · IMPOSSIBLE</span>
-            <span>CERTAIN · 100</span>
-          </div>
-        </div>
       </div>
     </section>
-  );
-}
-
-/**
- * A slow probability trace behind the hero. Two copies of one path translating
- * by -50% for a seamless loop: one GPU-composited transform, no canvas, no
- * WebGL, no per-frame JavaScript.
- */
-function BackgroundTrace() {
-  return (
-    <div
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] overflow-hidden opacity-[0.11]"
-      aria-hidden
-    >
-      <div className="animate-trace flex h-full w-[200%]">
-        <TraceSvg />
-        <TraceSvg />
-      </div>
-    </div>
-  );
-}
-
-function TraceSvg() {
-  return (
-    <svg viewBox="0 0 1200 300" preserveAspectRatio="none" className="h-full w-1/2 shrink-0" role="presentation">
-      <path
-        d="M0 235 L90 232 L150 205 L210 212 L280 160 L340 172 L410 128 L470 140 L540 96 L610 118 L680 74 L760 92 L830 52 L900 70 L980 38 L1060 54 L1130 26 L1200 34"
-        fill="none"
-        stroke="var(--color-lime)"
-        strokeWidth="1.5"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
   );
 }

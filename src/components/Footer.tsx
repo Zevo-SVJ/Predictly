@@ -4,7 +4,7 @@ import { Wordmark } from "./Logo";
 export function Footer() {
   return (
     <footer className="border-t border-line">
-      <div className="container-wide flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+      <div className="container-canvas flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Wordmark className="text-[15px]" />
           <p className="mt-2 text-[13px] text-faint">Forecast what happens next.</p>
@@ -14,20 +14,20 @@ export function Footer() {
           <Link href="/predict" className="text-muted transition-colors hover:text-fg">
             Predict
           </Link>
-          <Link href="/#explore" className="text-muted transition-colors hover:text-fg">
-            Explore
+          <Link href="/#discover" className="text-muted transition-colors hover:text-fg">
+            Discover
           </Link>
           <Link href="/history" className="text-muted transition-colors hover:text-fg">
             History
           </Link>
-          <Link href="/login" className="text-muted transition-colors hover:text-fg">
-            Sign in
+          <Link href="/#faq" className="text-muted transition-colors hover:text-fg">
+            FAQ
           </Link>
         </nav>
       </div>
 
       <div className="border-t border-line">
-        <p className="container-wide py-4 text-[12px] leading-relaxed text-faint">
+        <p className="container-canvas py-4 text-[12px] leading-relaxed text-faint">
           Predictly estimates probabilities from public evidence. Forecasts are
           not certainties, and nothing here is financial, legal, medical or
           betting advice.

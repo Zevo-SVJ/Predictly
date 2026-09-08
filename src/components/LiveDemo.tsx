@@ -20,17 +20,20 @@ export function LiveDemo({ questions }: { questions: TrendingEvent[] }) {
 
   return (
     <section id="ask" className="scroll-mt-20 border-t border-line py-16 sm:py-24">
-      <div className="container-content">
+      <div className="container-canvas">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <h2
-            className="font-semibold leading-[0.9] tracking-[-0.045em]"
-            style={{ fontSize: "var(--text-h1)" }}
-          >
-            Ask Predictly
-          </h2>
+          <div>
+            <p className="eyebrow">Predictly in action</p>
+            <h2
+              className="mt-4 font-semibold leading-[0.9] tracking-[-0.045em]"
+              style={{ fontSize: "var(--text-h1)" }}
+            >
+              Ask Predictly
+            </h2>
+          </div>
           <p className="max-w-[34ch] text-[15px] leading-relaxed text-muted">
             Give it a future question. We&apos;ll investigate — right here, no
-            account, no simulation.
+            account, no simulation. Question, research, forecast.
           </p>
         </div>
 

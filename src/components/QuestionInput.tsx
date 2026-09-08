@@ -130,7 +130,7 @@ export function QuestionInput({
             setQuestion(event.target.value);
             if (error) setError(null);
           }}
-          placeholder={idle ? "" : "Ask a question about the future…"}
+          placeholder={idle ? "" : "What do you think will happen?"}
           aria-describedby={error ? "question-error" : undefined}
           aria-invalid={error ? true : undefined}
           className={cn(

@@ -172,20 +172,6 @@
   }
 
   /*
-   * Probability rule: the recurring brand motif. A measuring scale from 0 to
-   * 100 drawn in hairlines — native to forecasting, and honest, because it is a
-   * ruler rather than a screenshot of a product that doesn't exist.
-   */
-  .tick-rule {
-    background-image: repeating-linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.18) 0 1px,
-      transparent 1px 100%
-    );
-    background-size: calc(100% / 48) 100%;
-  }
-
-  /*
    * Film grain. A single tiny SVG turbulence tile, so it costs one data URI
    * and no JS. Kept near-invisible: it removes the flatness of large dark
    * fields without ever reading as an effect.
@@ -301,20 +287,6 @@
   animation: bar-reveal 0.8s var(--ease-out-expo) 0.15s both;
 }
 
-/* A slow data trace drifting behind the hero. One transform, GPU-composited. */
-@keyframes trace-drift {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-.animate-trace {
-  animation: trace-drift 90s linear infinite;
-}
-
 @keyframes caret-blink {
   0%,
   45% {
@@ -328,6 +300,25 @@
 
 .animate-caret {
   animation: caret-blink 1.1s steps(1) infinite;
+}
+
+/*
+ * Forecast Signal Field. Each fragment crosses the hero once and loops, with a
+ * negative delay so the field is already populated on first paint. Transform
+ * only, so the whole layer composites on the GPU.
+ */
+@keyframes signal-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(calc(-100vw - 100%), 0, 0);
+  }
+}
+
+.animate-signal {
+  animation: signal-drift var(--signal-duration, 140s) linear infinite;
+  animation-delay: var(--signal-delay, 0s);
 }
 
 @keyframes rail-left {
@@ -377,7 +368,7 @@
   /* Continuous motion stops entirely; rails become scrollable lists. */
   .animate-rail-left,
   .animate-rail-right,
-  .animate-trace {
+  .animate-signal {
     animation: none !important;
     transform: none !important;
   }

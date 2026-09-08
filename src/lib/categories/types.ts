@@ -1,22 +1,26 @@
 /**
- * The domains Predictly forecasts, and the recognisable subjects inside them.
+ * The domains Predictly forecasts.
  *
- * One central model so the "What can you predict?" field, its mobile variant
- * and any future discovery surface all read from the same place.
+ * The category is the headline. Marks underneath are visual evidence of that
+ * domain's breadth — never the subject of the forecast themselves. "Sports" is
+ * the thing you can predict; the Champions League is one example inside it.
  */
 export type PredictionCategoryId =
   | "sports"
   | "technology"
-  | "ai"
-  | "markets"
+  | "politics"
   | "entertainment"
-  | "science";
+  | "business"
+  | "science"
+  | "gaming"
+  | "crypto"
+  | "culture";
 
 /**
- * A recognisable subject used as a visual anchor.
+ * A recognisable mark used as supporting visual evidence for a category.
  *
- * `asset` is intentionally optional. Where a third party's brand guidelines
- * permit the use, drop the official SVG into `/public/brands/` and set this
+ * `asset` is intentionally optional. Where a trademark owner's guidelines
+ * permit the use, drop the official file into `/public/brands/` and set this
  * field — `BrandMark` renders it automatically. Until then the mark renders as
  * its name set in type, which is legally safe and needs no permission.
  *
@@ -33,22 +37,18 @@ export interface BrandMarkRef {
   officialUrl?: string;
   /** A single glyph that is genuinely free to use, e.g. Bitcoin's ₿. */
   glyph?: string;
-  /** The exact question loaded into the prediction input. */
-  question: string;
+  /** Placement inside the category's cluster: % of the cluster box. */
+  x: number;
+  y: number;
+  scale: "sm" | "md" | "lg";
 }
 
 export interface PredictionCategory {
   id: PredictionCategoryId;
   name: string;
+  /** One concise line about what this domain covers. */
+  description: string;
+  /** A representative question, used for the category's Predict action. */
+  question: string;
   marks: BrandMarkRef[];
-}
-
-/** Placement in the desktop constellation. Hand-set for a controlled field. */
-export interface MarkPlacement {
-  markId: string;
-  /** Percentage of the field, from its top-left. */
-  x: number;
-  y: number;
-  /** Relative type size within the field. */
-  scale: "sm" | "md" | "lg" | "xl";
 }

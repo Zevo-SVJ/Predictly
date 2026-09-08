@@ -92,47 +92,61 @@ stale posts is not. Confidence is capped at medium when the evidence is old.
 
 ## The homepage
 
-One environment entered in sequence, not a feature list. The rhythm alternates
-on purpose — a large hero, a fast full-bleed ticker, an immersive category
-canvas, the real product, a quiet explanation, then the invitation.
+Eleven sections that answer, in order: what is this, what can I ask it, what
+does using it look like, where does the number come from, why trust it, why
+would I use it, how does it work, what else is here, what do I still want to
+know, and what do I do now.
 
 | Section | What it is |
 | --- | --- |
-| Hero | Display headline and the real input, which is one of the largest objects on the page. One example at a time, cycling through the placeholder. |
+| Hero | Display headline and the real input. The atmosphere is the Forecast Signal Field — fragments of information drifting through a system. |
 | On the radar | Full-bleed ticker, topic labels only. |
-| What can you predict? | Breadth as one composition — a constellation on desktop, a thumb-driven gallery on mobile. |
+| What can you predict? | Nine domains. The **category** is the headline; marks beneath it are supporting evidence of that domain's range. |
 | Ask Predictly | The page's one product demonstration. Runs the real `POST /api/predict`. |
-| How it works | Three words in sequence. Nothing more. |
-| Feedback | Renders nothing until real feedback exists. See below. |
+| The research layer | The fields Predictly records for every source, laid out as the engine reasons about them. |
+| The forecast | Stepping through evidence re-runs the real `calculateProbability`, so the number genuinely moves. |
+| Why people use Predictly | Three motivations as editorial blocks. |
+| How it works | Three stages on one rule — a mechanism, not three cards. |
+| What's being watched | Discovery feed. Real probability when one exists, "Not yet forecast" otherwise. |
+| Questions | FAQ, including an unambiguous answer on betting. |
 | What happens next? | Full-bleed close, ending on a working input. |
 
-Scale comes from the container system, not from font sizes: four tiers
-(`--w-text` 780px, `--w-content` 1320px, `--w-canvas` 1680px, and full-bleed),
-so some sections touch the viewport edges while others stay narrow. A page
-where every section is the same column reads small however large its type is.
+Scale comes from the container system, not font sizes: four tiers (`--w-text`
+780px, `--w-content` 1320px, `--w-canvas` 1680px, full-bleed), so some sections
+touch the viewport edges while others stay narrow.
 
-**One example at a time** is enforced throughout: the hero cycles a single
-placeholder, the radar shows topics rather than questions, the category field
-reveals only the active subject's question, and the demo offers one.
+There is deliberately no chart anywhere. An earlier hero used a drifting line
+graph, which made a forecasting product read as a trading terminal, and a 0–100
+rule under the input, which blurred the visitor's own guess with Predictly's
+forecast. Both are gone.
+
+### Two sections run the real engine
+
+`The forecast` imports `calculateProbability` — the same function the server
+uses — and re-runs it as evidence is stepped through, so the probability you
+watch change is produced by the real aggregation rather than a stored sequence.
+Its evidence, and the research layer's rows, describe **kinds** of source rather
+than naming publications: inventing plausible headlines, outlets and dates to
+dress these sections would be the exact fabrication the product exists to avoid.
+Both say so on the page.
 
 ### Feedback
 
 `src/lib/feedback/index.ts` exports an **empty array**, so the section renders
 nothing. Predictly has not launched, nobody has used it, and there is nothing
-truthful to show; plausible placeholder quotes on a public page would be
-fabricated social proof, which is the one thing a forecasting product cannot
-afford. The file documents what each field requires — the person said it, they
+truthful to show; placeholder quotes on a public page would be fabricated social
+proof. The file documents what each entry requires — the person said it, they
 agreed to be quoted publicly, and the source is recorded — and the section
 appears the moment the array is not empty.
 
 ### Brand marks
 
-`src/lib/categories/` models each subject with an optional `asset` field.
-**No asset is currently set**, so every mark renders as its name in type via
-`BrandMark`. This environment has no access to the official brand resources
-these would have to come from, and hand-drawing substitutes would be both an
-approximation of a protected mark and a fabrication. The typographic form is
-the permitted neutral representation, not a placeholder.
+`src/lib/categories/` models each domain with a cluster of marks, each carrying
+an optional `asset`. **No asset is currently set**, so every mark renders as its
+name in type via `BrandMark`. This environment has no access to the official
+brand resources these would have to come from, and hand-drawing substitutes
+would be both an approximation of a protected mark and a fabrication. The
+typographic form is the permitted neutral treatment, not a placeholder.
 
 To add a cleared mark: confirm the trademark owner's terms permit the use, put
 the official file in `/public/brands/`, and set `asset` and `officialUrl`.

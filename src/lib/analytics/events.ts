@@ -7,6 +7,8 @@ export const ANALYTICS_EVENTS = [
   "prediction_saved",
   "prediction_shared",
   "trending_event_clicked",
+  "category_viewed",
+  "category_mark_selected",
   "signup_started",
   "signup_completed",
 ] as const;
