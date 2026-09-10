@@ -28,12 +28,12 @@ export function TrendingRail() {
   };
 
   return (
-    <section id="trending" className="scroll-mt-24 border-y border-border bg-canvas py-10 sm:py-14">
-      <p className="container-page eyebrow">People are asking</p>
+    <section id="trending" className="scroll-mt-28 border-y border-border bg-canvas py-12 sm:py-16">
+      <p className="container-page label text-center">People are asking</p>
 
-      <div className="rail-mask mt-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="rail-mask mt-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <ul
-          className="animate-rail rail-track flex w-max gap-3 px-5 sm:px-10"
+          className="animate-rail rail-track flex w-max gap-3 px-5 sm:gap-4 sm:px-10"
           style={{ "--rail-duration": "72s" } as React.CSSProperties}
         >
           {/* Duplicated for the seamless loop; the copy is hidden from the
@@ -49,10 +49,12 @@ export function TrendingRail() {
                 type="button"
                 tabIndex={index >= DEMO_QUESTIONS.length ? -1 : undefined}
                 onClick={() => open(entry.question)}
-                className="group flex min-h-12 items-center gap-2.5 whitespace-nowrap rounded-full border border-border bg-white py-2.5 pl-3.5 pr-4 text-[14px] text-ink shadow-[var(--shadow-card)] transition-colors hover:border-cobalt-line hover:bg-cobalt-soft"
+                className="group flex min-h-14 items-center gap-3 whitespace-nowrap rounded-full border border-border bg-white py-3 pl-3 pr-5 text-[15px] text-ink shadow-[var(--shadow-object)] transition-colors hover:border-cobalt-line hover:bg-cobalt-soft"
               >
                 {entry.brand ? (
-                  <SourceLogo brand={entry.brand} size={14} className="text-muted" />
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-border bg-canvas text-ink">
+                    <SourceLogo brand={entry.brand} size={15} />
+                  </span>
                 ) : null}
                 {entry.question}
                 <ArrowUpRight

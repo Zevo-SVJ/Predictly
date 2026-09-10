@@ -1,12 +1,6 @@
 import {
   SiApple,
   SiArstechnica,
-  SiBitcoin,
-  SiFifa,
-  SiNetflix,
-  SiSamsung,
-  SiSpacex,
-  SiTesla,
   SiCnn,
   SiDazn,
   SiF1,
@@ -43,12 +37,6 @@ import { cn } from "@/lib/utils";
  */
 const MARKS: Record<BrandKey, { Icon: typeof SiApple; label: string; wide?: boolean }> = {
   apple: { Icon: SiApple, label: "Apple" },
-  fifa: { Icon: SiFifa, label: "FIFA" },
-  samsung: { Icon: SiSamsung, label: "Samsung", wide: true },
-  netflix: { Icon: SiNetflix, label: "Netflix", wide: true },
-  tesla: { Icon: SiTesla, label: "Tesla", wide: true },
-  bitcoin: { Icon: SiBitcoin, label: "Bitcoin" },
-  spacex: { Icon: SiSpacex, label: "SpaceX", wide: true },
   f1: { Icon: SiF1, label: "Formula 1", wide: true },
   mclaren: { Icon: SiMclaren, label: "McLaren", wide: true },
   redbull: { Icon: SiRedbull, label: "Red Bull" },

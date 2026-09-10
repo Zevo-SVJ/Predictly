@@ -57,12 +57,19 @@ type StageState =
 export function PredictionStage({
   initialQuestion,
   returnPath = "/",
+  variant = "landing",
   children,
 }: {
   /** Starts a run immediately — how `/predict?q=` arrives. */
   initialQuestion?: string;
   /** Where the URL goes back to when the visitor asks something else. */
   returnPath?: string;
+  /**
+   * `landing` opens on the marketing hero; `app` opens straight on the
+   * composer. `/predict` must use `app`: the hero's primary action points at
+   * `/predict`, so showing it there is a loop with no way to type.
+   */
+  variant?: "landing" | "app";
   children?: ReactNode;
 }) {
   const [state, setState] = useState<StageState>(() =>
@@ -219,7 +226,11 @@ export function PredictionStage({
       >
         <div className="container-page">
           {state.phase === "idle" ? (
-            <Hero onSubmit={start} />
+            variant === "landing" ? (
+              <Hero onSubmit={start} />
+            ) : (
+              <AskSurface seed={state.seed} onSubmit={start} />
+            )
           ) : (
             <div className="mx-auto w-full max-w-5xl">
               <button
@@ -291,6 +302,28 @@ export function PredictionStage({
         <AskContext.Provider value={start}>{children}</AskContext.Provider>
       ) : null}
     </>
+  );
+}
+
+/** `/predict` with nothing asked yet: the composer, and nothing else. */
+function AskSurface({ seed, onSubmit }: { seed?: string; onSubmit: (question: string) => void }) {
+  return (
+    <div className="mx-auto max-w-2xl text-center">
+      <h1 className="text-[2rem] font-semibold leading-[1.05] tracking-[-0.04em] sm:text-[2.75rem]">
+        Ask about anything that hasn&rsquo;t happened yet.
+      </h1>
+      <p className="mx-auto mt-5 max-w-md text-[16px] leading-relaxed text-muted">
+        Predictly researches the latest evidence, weighs what matters, and gives
+        you a probability.
+      </p>
+      <PredictionInput
+        key={seed ?? "empty"}
+        initialValue={seed}
+        onSubmit={onSubmit}
+        autoFocus
+        className="mt-9 text-left"
+      />
+    </div>
   );
 }
 

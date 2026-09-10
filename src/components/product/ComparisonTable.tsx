@@ -97,7 +97,7 @@ function Mark({ support }: { support: Support }) {
  */
 export function ComparisonTable({ className }: { className?: string }) {
   return (
-    <div className={className}>
+    <div className={cn("surface overflow-hidden px-6 py-8 sm:px-10 sm:py-10", className)}>
       {/* ---- desktop ---- */}
       <table className="hidden w-full border-collapse md:table">
         <caption className="sr-only">
@@ -105,15 +105,15 @@ export function ComparisonTable({ className }: { className?: string }) {
         </caption>
         <thead>
           <tr>
-            <th scope="col" className="w-[38%] pb-4 text-left align-bottom">
-              <span className="eyebrow">Capability</span>
+            <th scope="col" className="w-[38%] pb-5 text-left align-bottom">
+              <span className="label">Capability</span>
             </th>
             {COLUMNS.map((column) => (
               <th
                 key={column.id}
                 scope="col"
                 className={cn(
-                  "pb-4 text-left align-bottom text-[14px] font-semibold",
+                  "pb-5 text-left align-bottom text-[14px] font-semibold",
                   column.highlight ? "text-cobalt" : "text-muted",
                 )}
               >
@@ -125,13 +125,13 @@ export function ComparisonTable({ className }: { className?: string }) {
         <tbody>
           {ROWS.map((row) => (
             <tr key={row.id} className="border-t border-border">
-              <th scope="row" className="py-4 pr-6 text-left text-[14.5px] font-normal text-ink">
+              <th scope="row" className="py-5 pr-6 text-left text-[15.5px] font-normal text-ink">
                 {row.label}
               </th>
               {COLUMNS.map((column) => (
                 <td
                   key={column.id}
-                  className={cn("py-4", column.highlight && "bg-cobalt-soft/50")}
+                  className={cn("py-5", column.highlight && "bg-cobalt-soft/60")}
                 >
                   <Mark support={row.values[column.id] ?? "no"} />
                   <span className="sr-only">
@@ -145,16 +145,21 @@ export function ComparisonTable({ className }: { className?: string }) {
       </table>
 
       {/* ---- mobile ---- */}
-      <ul className="space-y-3 md:hidden">
+      {/* Mobile keeps the rows and drops the grid: four columns at 375px can
+          only survive by scrolling sideways or shrinking past readability. */}
+      <ul className="divide-y divide-border md:hidden">
         {ROWS.map((row) => (
-          <li
-            key={row.id}
-            className="rounded-[var(--radius-md)] border border-border bg-white p-4"
-          >
-            <p className="text-[14.5px] font-medium leading-snug text-ink">{row.label}</p>
-            <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2.5">
+          <li key={row.id} className="py-6 first:pt-0 last:pb-0">
+            <p className="text-[16px] font-medium leading-snug text-ink">{row.label}</p>
+            <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
               {COLUMNS.map((column) => (
-                <div key={column.id} className="min-w-0">
+                <div
+                  key={column.id}
+                  className={cn(
+                    "min-w-0 rounded-[var(--radius-sm)] px-3 py-2.5",
+                    column.highlight ? "bg-cobalt-soft" : "bg-canvas",
+                  )}
+                >
                   <dt
                     className={cn(
                       "truncate text-[11px]",
@@ -163,7 +168,7 @@ export function ComparisonTable({ className }: { className?: string }) {
                   >
                     {column.name}
                   </dt>
-                  <dd className="mt-1">
+                  <dd className="mt-1.5">
                     <Mark support={row.values[column.id] ?? "no"} />
                   </dd>
                 </div>

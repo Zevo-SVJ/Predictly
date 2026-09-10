@@ -33,6 +33,7 @@ export default async function PredictPage({
             key={question || "idle"}
             initialQuestion={question || undefined}
             returnPath="/predict"
+            variant="app"
           />
         </Suspense>
       </main>

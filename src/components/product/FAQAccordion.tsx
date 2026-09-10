@@ -16,26 +16,31 @@ export interface FaqEntry {
  */
 export function FAQAccordion({ entries, className }: { entries: FaqEntry[]; className?: string }) {
   return (
-    <ul className={cn("divide-y divide-border border-y border-border", className)}>
+    <ul className={cn("space-y-3", className)}>
       {entries.map((entry) => (
-        <li key={entry.q}>
+        <li
+          key={entry.q}
+          className="overflow-hidden rounded-[var(--radius-lg)] border border-border bg-white shadow-[var(--shadow-card)]"
+        >
           <details className="accordion group">
             <summary
               className={cn(
-                "flex cursor-pointer list-none items-start justify-between gap-6 py-5",
-                "text-[16px] font-medium leading-snug text-ink transition-colors",
-                "hover:text-cobalt sm:text-[17px]",
+                "flex cursor-pointer list-none items-start justify-between gap-6 px-6 py-7 sm:px-8",
+                "text-[18px] font-medium leading-snug tracking-[-0.02em] text-ink transition-colors",
+                "hover:text-cobalt sm:text-[19px]",
               )}
             >
               {entry.q}
               <span
-                className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border border-border text-muted transition-all duration-300 group-open:rotate-45 group-open:border-cobalt group-open:text-cobalt"
+                className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full border border-border bg-canvas text-muted transition-all duration-300 group-open:rotate-45 group-open:border-cobalt group-open:bg-cobalt-soft group-open:text-cobalt"
                 aria-hidden
               >
-                <Plus className="size-3.5" />
+                <Plus className="size-4" />
               </span>
             </summary>
-            <p className="pb-6 pr-8 text-[14.5px] leading-relaxed text-muted">{entry.a}</p>
+            <p className="px-6 pb-7 pr-12 text-[15.5px] leading-relaxed text-muted sm:px-8 sm:pr-16">
+              {entry.a}
+            </p>
           </details>
         </li>
       ))}

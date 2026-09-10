@@ -1,18 +1,15 @@
 import { LandingViewTracker } from "@/components/LandingViewTracker";
 import { PredictionStage } from "@/components/PredictionStage";
 import { Comparison } from "@/components/landing/Comparison";
+import { Evidence } from "@/components/landing/Evidence";
 import { FAQ } from "@/components/landing/FAQ";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
-import { Confidence } from "@/components/landing/Confidence";
-import { Examples } from "@/components/landing/Examples";
-import { ForecastExample } from "@/components/landing/ForecastExample";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Navbar } from "@/components/landing/Navbar";
-import { ResearchDemo } from "@/components/landing/ResearchDemo";
-import { Reviews } from "@/components/landing/Reviews";
+import { SecondaryForecast } from "@/components/landing/SecondaryForecast";
 import { TrendingRail } from "@/components/landing/TrendingRail";
-
+import { TwoNumbers } from "@/components/landing/TwoNumbers";
 export const revalidate = 3600;
 
 export const metadata = {
@@ -36,13 +33,16 @@ export const metadata = {
  * passed as children below is what a visitor sees *before* they ask, and it is
  * unmounted the moment they do.
  *
- * The order is one argument told once, and the shapes deliberately alternate so
- * that no two adjacent sections read the same way: a moving rail of real
- * questions, a forecast set directly on white with no card at all, the research
- * behind it as one large bordered surface on a tinted band, four product states
- * in a single strip, six answers as a grid, the two-number split that is the
- * product's actual differentiator, the honest state of our social proof, a
- * comparison, the questions, and the composer the page opened with.
+ * Nine scenes, each one large object and one idea, in the order a sceptic would
+ * ask for them: the forecast itself, a rail of questions that are genuinely
+ * open, what a forecast is built on, how it is built, the same machine on a
+ * different subject, the two numbers every forecast carries, where Predictly
+ * sits against the things it gets mistaken for, the objections, and the
+ * composer the page opened with.
+ *
+ * There are exactly two forecast examples on the page. A grid of a dozen says
+ * "look how many categories we have"; two say "look what one answer contains".
+ * There is no testimonials section, because there are no testimonials.
  */
 export default function HomePage() {
   return (
@@ -53,12 +53,10 @@ export default function HomePage() {
       <main id="main">
         <PredictionStage>
           <TrendingRail />
-          <ForecastExample />
-          <ResearchDemo />
+          <Evidence />
           <HowItWorks />
-          <Examples />
-          <Confidence />
-          <Reviews />
+          <SecondaryForecast />
+          <TwoNumbers />
           <Comparison />
           <FAQ />
           <FinalCTA />

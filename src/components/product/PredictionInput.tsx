@@ -64,6 +64,11 @@ export function PredictionInput({
 
   return (
     <form
+      // A real GET to the prediction route. Scripting takes over and runs the
+      // forecast in place; without it the form still goes somewhere useful
+      // instead of silently doing nothing.
+      action="/predict"
+      method="get"
       onSubmit={(event) => {
         event.preventDefault();
         submit();
@@ -97,7 +102,7 @@ export function PredictionInput({
           <textarea
             ref={fieldRef}
             id="prediction-input"
-            name="question"
+            name="q"
             rows={1}
             maxLength={MAX_LENGTH}
             disabled={pending}

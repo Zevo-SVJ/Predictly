@@ -25,16 +25,8 @@ const LINKS = [
  * come out of the sheet and sit inline.
  */
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuId = useId();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Escape closes the sheet, and the page behind it does not scroll while it
   // is open — on a phone that scroll-through is the difference between a sheet
@@ -54,15 +46,17 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 pt-3 sm:pt-4">
+    <header className="fixed inset-x-0 top-0 z-50 pt-5 sm:pt-6">
       <div className="container-page">
+        {/* A container from the first frame, not one that materialises on
+            scroll: it should read as an object floating above the page. */}
         <nav
           aria-label="Main"
           className={cn(
-            "relative flex h-14 items-center justify-between gap-3 rounded-full pl-2 pr-2 transition-all duration-300 sm:pl-5",
-            scrolled || open
-              ? "border border-border bg-white/95 shadow-[var(--shadow-nav)] backdrop-blur-xl"
-              : "border border-transparent",
+            "relative flex h-[4.25rem] items-center justify-between gap-3 rounded-[2rem] p-2.5 sm:pl-6",
+            // Fully opaque: a translucent pill lets a 7rem headline figure
+            // ghost through it as the page scrolls past.
+            "border border-border bg-white shadow-[var(--shadow-nav)]",
           )}
         >
           <button
@@ -71,15 +65,15 @@ export function Navbar() {
             aria-controls={menuId}
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((value) => !value)}
-            className="flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-canvas md:hidden"
+            className="flex size-12 items-center justify-center rounded-full border border-border bg-white text-ink transition-colors hover:bg-canvas md:hidden"
           >
-            {open ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
+            {open ? <X className="size-[22px]" aria-hidden /> : <Menu className="size-[22px]" aria-hidden />}
           </button>
 
           {/* Centred on a phone, flush left once the links appear beside it. */}
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 rounded-md text-[15px] text-ink md:static md:translate-x-0"
+            className="absolute left-1/2 -translate-x-1/2 rounded-md text-[16px] text-ink md:static md:translate-x-0"
           >
             <Wordmark />
           </Link>
@@ -100,7 +94,7 @@ export function Navbar() {
           <Link
             href="/predict"
             aria-label="Make a prediction"
-            className="flex size-10 items-center justify-center rounded-full bg-cobalt text-white transition-colors hover:bg-cobalt-deep md:size-auto md:px-4 md:py-2.5"
+            className="flex size-12 items-center justify-center rounded-full bg-cobalt text-white transition-colors hover:bg-cobalt-deep md:size-auto md:px-5 md:py-3"
           >
             <span className="hidden text-[13.5px] font-medium md:inline">Make a prediction</span>
             <ArrowRight className="size-[18px] md:hidden" aria-hidden />
@@ -110,7 +104,7 @@ export function Navbar() {
         {open ? (
           <div
             id={menuId}
-            className="mt-2 overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white p-2 shadow-[var(--shadow-nav)] md:hidden"
+            className="mt-3 overflow-hidden rounded-[var(--radius-lg)] border border-border bg-white p-3 shadow-[var(--shadow-nav)] md:hidden"
           >
             <ul>
               {LINKS.map((link) => (
@@ -118,7 +112,7 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="flex min-h-12 items-center rounded-[var(--radius-md)] px-4 text-[16px] text-ink transition-colors hover:bg-canvas"
+                    className="flex min-h-14 items-center rounded-[var(--radius-sm)] px-5 text-[17px] text-ink transition-colors hover:bg-canvas"
                   >
                     {link.label}
                   </Link>

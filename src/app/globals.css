@@ -9,10 +9,12 @@
  * rule is enforceable rather than aspirational.
  * ========================================================================= */
 @theme {
-  /* --- surfaces --- */
+  /* --- surfaces ---
+     The soft ground is a touch warmer than the card white, so a large white
+     object reads as sitting *on* the page rather than merging into it. --- */
   --color-white: #ffffff;
-  --color-canvas: #f5f7fa;
-  --color-raised: #fbfcfd;
+  --color-canvas: #f7f8fa;
+  --color-raised: #fcfcfd;
 
   /* --- type ---
      Two tiers, not three. A lighter third grey was in here and measured 2.6:1
@@ -47,29 +49,34 @@
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
 
   /* --- type scale ---
-     Two fluid steps only: the hero line and the section heading. Everything
-     else is sized where it is used, because a probability figure, a question
-     and a source row have different jobs at 375px than they do at 1440px and
-     one shared clamp gets all three slightly wrong. --- */
-  --text-hero: clamp(2.5rem, 7.2vw, 4.75rem);
-  --text-section: clamp(1.9rem, 3.6vw, 3.15rem);
+     Typography is a visual object here, not a label on one. Two fluid steps:
+     the hero line and the section heading. Everything else is sized where it is
+     used, because a probability figure, a question and a source row have
+     different jobs at 375px than at 1440px and one shared clamp gets all three
+     slightly wrong. --- */
+  --text-hero: clamp(3.05rem, 12.4vw, 5.5rem);
+  --text-section: clamp(2.35rem, 6.4vw, 3.5rem);
 
   /* --- radii ---
-     Four steps, used for four jobs: small UI, lists, product cards, and the
-     large product surfaces that carry a section. Pills are for buttons, tags
-     and statuses only — the page is not a collection of floating bubbles. --- */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 26px;
+     Four steps for four jobs, and every surface picks one of them: small UI,
+     rows and inner objects, product cards, and the large canvases that carry a
+     whole section. Pills are reserved for buttons, tags and statuses — the page
+     is not a collection of floating bubbles. --- */
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
 
   /* --- rhythm --- */
   --space-section: clamp(4.5rem, 8vw, 8rem);
 
-  /* --- elevation. Two levels, both restrained. --- */
-  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
-  --shadow-lift: 0 4px 8px -2px rgba(16, 24, 40, 0.06), 0 16px 32px -8px rgba(16, 24, 40, 0.1);
-  --shadow-nav: 0 1px 2px rgba(16, 24, 40, 0.05), 0 8px 24px -6px rgba(16, 24, 40, 0.12);
+  /* --- elevation ---
+     Deliberately almost invisible. A card should look flat until you notice it
+     is not; anything heavier turns a page of white objects into a dashboard. --- */
+  --shadow-card: 0 8px 32px rgba(11, 18, 32, 0.05);
+  --shadow-lift: 0 12px 44px rgba(11, 18, 32, 0.07);
+  --shadow-object: 0 4px 14px rgba(11, 18, 32, 0.06);
+  --shadow-nav: 0 6px 28px rgba(11, 18, 32, 0.08);
 
   /* --- motion --- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -145,13 +152,78 @@
     padding-block: var(--space-section);
   }
 
-  /* Small uppercase metadata: eyebrows, column heads, product labels. */
+  /*
+   * The section label. Appears above every major heading on the page and is
+   * the one place cobalt is used purely as a signature.
+   */
   .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-cobalt);
+  }
+
+  /* The quieter variant, for labels inside a product surface. */
+  .label {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-muted);
+  }
+
+  /* The two button shapes. Substantial pills, never rectangles. */
+  .pill-primary,
+  .pill-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.5rem;
+    padding-inline: 2rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition:
+      transform var(--dur-fast) var(--ease-out-expo),
+      background-color var(--dur-fast),
+      border-color var(--dur-fast);
+  }
+
+  .pill-primary {
+    background: var(--color-cobalt);
+    color: #fff;
+    box-shadow: var(--shadow-object);
+  }
+
+  .pill-primary:hover {
+    background: var(--color-cobalt-deep);
+    transform: translateY(-1px);
+  }
+
+  .pill-secondary {
+    background: var(--color-white);
+    color: var(--color-ink);
+    border: 1px solid var(--color-border);
+  }
+
+  .pill-secondary:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-1px);
+  }
+
+  .pill-primary:active,
+  .pill-secondary:active {
+    transform: translateY(0) scale(0.985);
+  }
+
+  /* The page's one card shape. Everything large uses this. */
+  .surface {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
   }
 
   /*
@@ -262,6 +334,31 @@
   .rail-dup {
     display: none;
   }
+
+  /* The underline is part of the wordmark, not an effect: it appears drawn. */
+  .animate-underline {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/*
+ * The hero underline draws itself once, left to right. The path length is set
+ * in the component so this works for any stroke.
+ */
+@keyframes underline-draw {
+  from {
+    stroke-dashoffset: var(--underline-length);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-underline {
+  stroke-dasharray: var(--underline-length);
+  stroke-dashoffset: var(--underline-length);
+  animation: underline-draw 0.9s var(--ease-out-expo) 0.35s forwards;
 }
 
 /* Fades the rail into the page at both ends rather than cutting it off. */
