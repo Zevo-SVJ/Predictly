@@ -17,11 +17,12 @@ import { DEMO_APPLE } from "@/lib/demo";
 export function ResearchDemo() {
   return (
     <section className="section-y bg-canvas">
-      <div className="container-wide">
+      <div className="container-page">
         <div className="max-w-2xl">
-          <p className="eyebrow">The research step</p>
+          <p className="eyebrow">Research</p>
           <h2 className="mt-3 text-[length:var(--text-section)] font-semibold leading-[1.05]">
-            Every forecast starts with evidence.
+            The web has the clues.
+            <br className="hidden sm:block" /> Predictly connects them.
           </h2>
           <p className="mt-5 text-[16px] leading-relaxed text-muted sm:text-[17px]">
             Predictly reads what it finds and scores each source on its own —
@@ -49,7 +50,7 @@ export function ResearchDemo() {
               <div className="min-w-0 border-b border-border p-5 sm:p-7 lg:border-b-0 lg:border-r">
                 <div className="flex items-baseline justify-between gap-3">
                   <h3 className="eyebrow">Sources found</h3>
-                  <span className="font-mono text-[11px] tabular-nums text-faint">
+                  <span className="font-mono text-[11px] tabular-nums text-muted">
                     {String(DEMO_APPLE.sources.length).padStart(2, "0")}
                   </span>
                 </div>
@@ -67,7 +68,7 @@ export function ResearchDemo() {
                     <EvidenceItem key={source.id} source={source} index={index} />
                   ))}
                 </ul>
-                <p className="mt-3 text-[12.5px] text-faint">
+                <p className="mt-3 text-[12.5px] text-muted">
                   Relevance × reliability × strength × recency gives each source
                   one weight. Those weights are what the probability is made of.
                 </p>

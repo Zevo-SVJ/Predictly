@@ -38,7 +38,7 @@ export function ConfidenceIndicator({
         ))}
       </span>
       <span className="text-[12px] text-muted">
-        <span className="text-faint">Confidence</span>{" "}
+        <span className="text-muted">Confidence</span>{" "}
         <span className="font-medium text-ink">{level.label}</span>
       </span>
     </span>

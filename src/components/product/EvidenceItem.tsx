@@ -47,7 +47,7 @@ export function EvidenceItem({
       <dl className="mt-3.5 space-y-2">
         {scores.map((score) => (
           <div key={score.label} className="flex items-center gap-3">
-            <dt className="w-[4.75rem] shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-faint">
+            <dt className="w-[4.75rem] shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-muted">
               {score.label}
             </dt>
             <dd className="flex min-w-0 flex-1 items-center gap-2.5">

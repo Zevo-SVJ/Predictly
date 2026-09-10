@@ -176,7 +176,7 @@ export function ShareCard({ forecast }: { forecast: ForecastResult }) {
           <ProbabilityBar probability={forecast.probability} leading className="mt-4" />
         </div>
 
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
           {forecast.evidence.length} sources · {formatDate(forecast.researchedAt) ?? "—"}
         </p>
       </div>

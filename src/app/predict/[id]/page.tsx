@@ -51,7 +51,7 @@ export default async function ForecastPage({ params }: { params: Promise<{ id: s
   return (
     <>
       <Navbar />
-      <main id="main" className="container-wide pb-16 pt-24 sm:pb-20 sm:pt-32">
+      <main id="main" className="container-page pb-16 pt-24 sm:pb-20 sm:pt-32">
         <ForecastResultView forecast={forecast} />
 
         <section className="mt-14 border-t border-border pt-10 sm:mt-16">

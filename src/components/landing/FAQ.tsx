@@ -25,6 +25,26 @@ const ENTRIES: FaqEntry[] = [
     a: "That is the one thing it does not do. A language model is used twice: to work out what your question is really asking, and to judge each source it reads. It is never asked what the probability is. Handing that step to a model is what makes most AI forecasting impossible to check, because there is nothing behind the number to inspect.",
   },
   {
+    q: "What does the probability actually mean?",
+    a: "That out of many situations that look like this one, Predictly expects the event to happen about that often. A 70% forecast that does not come true is not automatically wrong — three in ten of them are supposed to miss. What would be wrong is a run of 70% calls landing far less than seven times in ten.",
+  },
+  {
+    q: "What is confidence, and how is it different?",
+    a: "Probability is about the event. Confidence is about the forecast: how many usable sources there were, how reliable they were, how recent, and how much they agreed. A 50/50 call built on five recent primary sources is high-confidence; an 80% call built on two stale posts is not. Both numbers are shown, always.",
+  },
+  {
+    q: "How recent is the research?",
+    a: "It runs when you ask — there is no cached answer waiting. The date each source was published is recorded and fed into the weighting, so older material still counts but counts less, and a forecast resting entirely on old evidence is capped at medium confidence no matter how unanimous it is.",
+  },
+  {
+    q: "Does Predictly guarantee its predictions?",
+    a: "No, and any forecasting product that says otherwise is selling something else. A probability is a description of uncertainty. Predictly's job is to make the reasoning behind that number inspectable — every source, every weight — so you can disagree with it on the evidence rather than on faith.",
+  },
+  {
+    q: "Are my predictions public?",
+    a: "A forecast gets a shareable link so you can send it to someone, and anyone with that link can read it. It is not listed, indexed in a public feed or attached to your name unless you share it yourself.",
+  },
+  {
     q: "How accurate is it?",
     a: "We don't publish an accuracy figure, because not enough forecasts have resolved for one to mean anything yet. Every forecast is stored with a resolution field from the first day, so when there is a real track record it will be counted rather than claimed.",
   },
@@ -50,7 +70,7 @@ export function FAQ() {
           <div className="min-w-0">
             <p className="eyebrow">Questions</p>
             <h2 className="mt-3 text-[length:var(--text-section)] font-semibold leading-[1.05]">
-              The obvious objections.
+              Common questions.
             </h2>
           </div>
 

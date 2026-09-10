@@ -83,9 +83,9 @@ export function PredictionError({
       <h2 className="mt-6 text-xl font-semibold leading-tight">{copy.title}</h2>
       <p className="mt-3 text-[15px] leading-relaxed text-muted">{copy.body}</p>
 
-      {hint ? <p className="mt-3 text-sm text-faint">{hint}</p> : null}
+      {hint ? <p className="mt-3 text-sm text-muted">{hint}</p> : null}
       {message && process.env.NODE_ENV === "development" ? (
-        <p className="mt-4 font-mono text-xs text-faint">{message}</p>
+        <p className="mt-4 font-mono text-xs text-muted">{message}</p>
       ) : null}
 
     </div>

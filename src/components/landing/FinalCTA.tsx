@@ -2,9 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { PredictionInput } from "../product/PredictionInput";
-import { SuggestionChips } from "../product/SuggestionChips";
 import { useAskPredictly } from "../PredictionStage";
-import { DEMO_SUGGESTIONS } from "@/lib/demo";
 
 /**
  * The page ends on the same action it opened with.
@@ -36,12 +34,9 @@ export function FinalCTA() {
             with — because you can see everything it was built from.
           </p>
 
-          <PredictionInput onSubmit={submit} className="mt-8" />
-          <SuggestionChips
-            questions={DEMO_SUGGESTIONS}
-            onSelect={submit}
-            className="mt-4 justify-center"
-          />
+          {/* The input itself, not a button that scrolls back to one. Asking
+              is the product; a second CTA pointing at the first is furniture. */}
+          <PredictionInput onSubmit={submit} className="mt-9" />
         </div>
       </div>
     </section>

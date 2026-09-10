@@ -121,7 +121,7 @@ export function LoginForm({ next = "/history" }: { next?: string }) {
         </button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-faint">
+      <div className="flex items-center gap-3 text-xs text-muted">
         <span className="h-px flex-1 bg-line" aria-hidden />
         or
         <span className="h-px flex-1 bg-line" aria-hidden />

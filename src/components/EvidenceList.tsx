@@ -29,7 +29,7 @@ export function EvidenceItem({ item }: { item: EvidenceItemType }) {
   const linked = item.url.startsWith("http");
 
   const meta = (
-    <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
+    <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
       <span className="text-muted">{item.sourceName}</span>
       {published ? (
         <>
@@ -47,7 +47,7 @@ export function EvidenceItem({ item }: { item: EvidenceItemType }) {
   if (!linked) {
     return (
       <li className="py-4">
-        <p className="font-mono text-[12px] uppercase tracking-[0.14em] text-faint">{item.title}</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.14em] text-muted">{item.title}</p>
         {meta}
         <p className="mt-2 text-sm leading-relaxed text-muted">{item.summary}</p>
       </li>
@@ -67,7 +67,7 @@ export function EvidenceItem({ item }: { item: EvidenceItemType }) {
             {item.title}
           </p>
           <ExternalLink
-            className="mt-0.5 size-3.5 shrink-0 text-faint transition-colors group-hover:text-cobalt"
+            className="mt-0.5 size-3.5 shrink-0 text-muted transition-colors group-hover:text-cobalt"
             aria-hidden
           />
         </div>

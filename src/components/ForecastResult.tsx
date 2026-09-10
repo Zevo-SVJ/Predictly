@@ -103,7 +103,7 @@ export function ForecastResult({
               <ol className="mt-5 space-y-3">
                 {signals.map((signal, index) => (
                   <li key={signal.id} className="flex gap-3 text-[14px] leading-relaxed">
-                    <span className="shrink-0 font-mono text-[11px] tabular-nums text-faint">
+                    <span className="shrink-0 font-mono text-[11px] tabular-nums text-muted">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <span className="min-w-0">
@@ -122,7 +122,7 @@ export function ForecastResult({
               </ol>
             ) : null}
 
-            <p className="mt-6 border-l-2 border-border pl-4 text-[13.5px] leading-relaxed text-faint">
+            <p className="mt-6 border-l-2 border-border pl-4 text-[13.5px] leading-relaxed text-muted">
               {forecast.normalizedEvent}
             </p>
           </section>
@@ -131,10 +131,10 @@ export function ForecastResult({
         <div className="min-w-0 space-y-5">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <h2 className="text-lg font-semibold">Sources</h2>
-            <span className="text-[12.5px] text-faint">Researched {researched ?? "—"}</span>
+            <span className="text-[12.5px] text-muted">Researched {researched ?? "—"}</span>
           </div>
 
-          <p className="text-[13px] leading-relaxed text-faint">
+          <p className="text-[13px] leading-relaxed text-muted">
             Confidence describes the forecast, not the event: it reflects how
             much usable, recent, agreeing evidence Predictly found.
           </p>
@@ -144,7 +144,7 @@ export function ForecastResult({
       </div>
 
       <footer className="flex items-start gap-2.5 rounded-[var(--radius-md)] border border-border bg-canvas p-4">
-        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-faint" aria-hidden />
+        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden />
         <p className="text-xs leading-relaxed text-muted">
           A probability estimate from public evidence, not a statement about what
           will happen. Predictly does not give financial, legal, medical or

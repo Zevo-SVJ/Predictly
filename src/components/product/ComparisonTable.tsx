@@ -158,7 +158,7 @@ export function ComparisonTable({ className }: { className?: string }) {
                   <dt
                     className={cn(
                       "truncate text-[11px]",
-                      column.highlight ? "font-semibold text-cobalt" : "text-faint",
+                      column.highlight ? "font-semibold text-cobalt" : "text-muted",
                     )}
                   >
                     {column.name}

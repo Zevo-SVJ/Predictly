@@ -217,7 +217,7 @@ export function PredictionStage({
         id="stage"
         className="relative scroll-mt-4 pb-14 pt-24 sm:pb-20 sm:pt-32 lg:pb-24"
       >
-        <div className="container-wide">
+        <div className="container-page">
           {state.phase === "idle" ? (
             <Hero onSubmit={start} />
           ) : (
@@ -321,7 +321,7 @@ function Researching({
         <ResearchProgress stage={stage} detail={detail} />
       </div>
 
-      <p className="mt-6 text-[13px] leading-relaxed text-faint">
+      <p className="mt-6 text-[13px] leading-relaxed text-muted">
         Predictly reads the sources it finds, judges each one on its own, then
         aggregates them into a probability. This usually takes under a minute.
       </p>

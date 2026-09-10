@@ -47,7 +47,7 @@ export function OutcomeRow({
               {label}
             </span>
             {detail ? (
-              <span className="mt-0.5 block truncate text-[12px] text-faint">{detail}</span>
+              <span className="mt-0.5 block truncate text-[12px] text-muted">{detail}</span>
             ) : null}
           </span>
 

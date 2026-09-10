@@ -35,7 +35,7 @@ export function ResearchSource({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <p className="text-[14px] font-medium leading-tight text-ink">{source.name}</p>
-          <span className="text-[11px] text-faint">{source.kind}</span>
+          <span className="text-[11px] text-muted">{source.kind}</span>
           {/* On a phone the stance rides in the header row. Parked in a right
               column it would take a third of a 348px card and squeeze the beat
               below it into two truncated fragments. */}
@@ -47,7 +47,7 @@ export function ResearchSource({
       <div className="hidden shrink-0 flex-col items-end gap-1.5 pt-0.5 sm:flex">
         <StanceChip stance={source.stance} />
         {showScores ? (
-          <span className="font-mono text-[10.5px] tabular-nums text-faint">
+          <span className="font-mono text-[10.5px] tabular-nums text-muted">
             REL {Math.round(source.reliability * 100)} · REV {Math.round(source.relevance * 100)}
           </span>
         ) : null}

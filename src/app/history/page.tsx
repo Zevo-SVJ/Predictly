@@ -89,7 +89,7 @@ function HistoryRow({ forecast }: { forecast: ForecastResult }) {
           <span className="block truncate text-[15px] font-medium text-ink group-hover:text-cobalt">
             {forecast.question}
           </span>
-          <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
+          <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
             <span className="uppercase tracking-wider">{headline?.label}</span>
             <span aria-hidden>·</span>
             <span>{forecast.category}</span>
@@ -106,7 +106,7 @@ function HistoryRow({ forecast }: { forecast: ForecastResult }) {
 
 function ResolutionChip({ forecast }: { forecast: ForecastResult }) {
   const config = {
-    unresolved: { icon: null, label: "Open", className: "text-faint" },
+    unresolved: { icon: null, label: "Open", className: "text-muted" },
     correct: { icon: CheckCircle2, label: "Correct", className: "text-supports" },
     wrong: { icon: XCircle, label: "Wrong", className: "text-counters" },
     cancelled: { icon: CircleSlash, label: "Cancelled", className: "text-muted" },

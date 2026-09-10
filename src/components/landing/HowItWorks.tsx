@@ -25,7 +25,7 @@ const STEPS: { id: string; title: string; body: string; panel: ReactNode }[] = [
       <div className="rounded-[var(--radius-md)] border border-border-strong bg-white p-3.5 shadow-[var(--shadow-card)]">
         <p className="text-[14px] leading-snug text-ink">{DEMO_APPLE.question}</p>
         <div className="mt-3 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
             2 outcomes
           </span>
           <span className="rounded-[var(--radius-sm)] bg-cobalt px-2.5 py-1 text-[11px] font-medium text-white">
@@ -57,8 +57,8 @@ const STEPS: { id: string; title: string; body: string; panel: ReactNode }[] = [
     ),
   },
   {
-    id: "evaluate",
-    title: "Evaluate",
+    id: "weigh",
+    title: "Weigh",
     body: "Each source is scored on its own — which outcome it points to, how strongly, how reliable the publisher is, and how recent it is.",
     panel: (
       <ul>
@@ -76,10 +76,10 @@ const STEPS: { id: string; title: string; body: string; panel: ReactNode }[] = [
       <div className="rounded-[var(--radius-md)] border border-border-strong bg-white p-4 shadow-[var(--shadow-card)]">
         <ProbabilityValue probability={DEMO_APPLE.probability} size="sm" />
         <p className="mt-1.5 text-[13px] font-medium text-ink">
-          Yes <span className="font-normal text-faint">· foldable iPhone in 2027</span>
+          Yes <span className="font-normal text-muted">· foldable iPhone in 2027</span>
         </p>
         <ProbabilityBar probability={DEMO_APPLE.probability} leading className="mt-3" />
-        <p className="mt-2 font-mono text-[10.5px] tabular-nums text-faint">
+        <p className="mt-2 font-mono text-[10.5px] tabular-nums text-muted">
           NO {formatPercent(1 - DEMO_APPLE.probability)}
         </p>
       </div>
@@ -90,11 +90,11 @@ const STEPS: { id: string; title: string; body: string; panel: ReactNode }[] = [
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="section-y scroll-mt-24 bg-canvas">
-      <div className="container-wide">
+      <div className="container-page">
         <div className="max-w-2xl">
           <p className="eyebrow">How it works</p>
           <h2 className="mt-3 text-[length:var(--text-section)] font-semibold leading-[1.05]">
-            Four steps, one interface.
+            What happens when you make a prediction.
           </h2>
         </div>
 

@@ -33,7 +33,7 @@ export function ResearchProgress({
             key={item}
             className={cn(
               "flex items-center gap-3 py-2.5 text-[14px] transition-colors duration-300",
-              done ? "text-muted" : active ? "font-medium text-ink" : "text-faint/60",
+              done ? "text-muted" : active ? "font-medium text-ink" : "text-muted",
             )}
           >
             <span className="flex size-4 shrink-0 items-center justify-center">
@@ -49,7 +49,7 @@ export function ResearchProgress({
             <span className="min-w-0 flex-1 truncate">{STAGE_LABEL[item]}</span>
 
             {active && detail ? (
-              <span className="max-w-[45%] shrink-0 truncate font-mono text-[11px] text-faint">
+              <span className="max-w-[45%] shrink-0 truncate font-mono text-[11px] text-muted">
                 {detail}
               </span>
             ) : null}

@@ -55,7 +55,7 @@ export function Reviews() {
                   {review.quote}
                 </blockquote>
                 <p className="mt-4 text-[13px] font-medium text-ink">{review.name}</p>
-                <p className="text-[12.5px] text-faint">{review.context}</p>
+                <p className="text-[12.5px] text-muted">{review.context}</p>
               </li>
             ))}
           </ul>
@@ -66,10 +66,10 @@ export function Reviews() {
                 key={slot}
                 className="rounded-[var(--radius-md)] border border-dashed border-border-strong bg-white/60 p-5"
               >
-                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
                   Empty slot
                 </span>
-                <p className="mt-3 text-[15px] leading-relaxed text-faint">{slot}</p>
+                <p className="mt-3 text-[15px] leading-relaxed text-muted">{slot}</p>
               </li>
             ))}
           </ul>

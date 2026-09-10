@@ -4,12 +4,14 @@ import { Comparison } from "@/components/landing/Comparison";
 import { FAQ } from "@/components/landing/FAQ";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
+import { Confidence } from "@/components/landing/Confidence";
+import { Examples } from "@/components/landing/Examples";
 import { ForecastExample } from "@/components/landing/ForecastExample";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { InAction } from "@/components/landing/InAction";
 import { Navbar } from "@/components/landing/Navbar";
 import { ResearchDemo } from "@/components/landing/ResearchDemo";
 import { Reviews } from "@/components/landing/Reviews";
+import { TrendingRail } from "@/components/landing/TrendingRail";
 
 export const revalidate = 3600;
 
@@ -35,11 +37,12 @@ export const metadata = {
  * unmounted the moment they do.
  *
  * The order is one argument told once, and the shapes deliberately alternate so
- * no two adjacent sections read the same way: the product itself, then the
- * research behind it on a tinted band, then its result set directly on white
- * with no card at all, then the four steps as one bordered strip, then the
- * whole thing again on a live event, then the honest state of our social proof,
- * a comparison, the objections, and the same input the page opened with.
+ * that no two adjacent sections read the same way: a moving rail of real
+ * questions, a forecast set directly on white with no card at all, the research
+ * behind it as one large bordered surface on a tinted band, four product states
+ * in a single strip, six answers as a grid, the two-number split that is the
+ * product's actual differentiator, the honest state of our social proof, a
+ * comparison, the questions, and the composer the page opened with.
  */
 export default function HomePage() {
   return (
@@ -49,10 +52,12 @@ export default function HomePage() {
 
       <main id="main">
         <PredictionStage>
-          <ResearchDemo />
+          <TrendingRail />
           <ForecastExample />
+          <ResearchDemo />
           <HowItWorks />
-          <InAction />
+          <Examples />
+          <Confidence />
           <Reviews />
           <Comparison />
           <FAQ />

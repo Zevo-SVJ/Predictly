@@ -32,6 +32,12 @@ const DEMO_NOW = new Date("2026-09-10T00:00:00.000Z");
 export type BrandKey =
   | "apple"
   | "f1"
+  | "fifa"
+  | "samsung"
+  | "netflix"
+  | "tesla"
+  | "bitcoin"
+  | "spacex"
   | "mclaren"
   | "redbull"
   | "guardian"
@@ -300,9 +306,123 @@ export const DEMO_APPLE: DemoForecast = build({
   strengths: { apple: 0.68, arstechnica: 0.62, techcrunch: 0.52, nyt: 0.66, cnn: 0.3 },
 });
 
-/** The three suggestion chips in the hero and the final call to action. */
-export const DEMO_SUGGESTIONS = [
-  "Who will win the next Champions League?",
-  "Will Apple release a foldable iPhone in 2027?",
-  "Who will win the next F1 race?",
+/**
+ * Questions worth asking, for the trending rail.
+ *
+ * Editorial, not measured. The rail says "popular questions", never "trending
+ * now" with a count beside it — we have no traffic data and will not imply we
+ * do. Every one is a real event that is genuinely undecided.
+ */
+export const DEMO_QUESTIONS: { question: string; brand?: BrandKey }[] = [
+  { question: "Who will win the next Champions League?" },
+  { question: "Will Apple release a foldable iPhone in 2027?", brand: "apple" },
+  { question: "Who will win the next F1 race?", brand: "f1" },
+  { question: "Will Bitcoin reach $150k this year?", brand: "bitcoin" },
+  { question: "Which nation will win the next World Cup?", brand: "fifa" },
+  { question: "Will Starship carry a crew before 2028?", brand: "spacex" },
+  { question: "Who will win the Ballon d'Or?" },
+  { question: "Will Netflix win Best Picture at the next Oscars?", brand: "netflix" },
+];
+
+
+/**
+ * One-line category examples.
+ *
+ * Same rules as everything else in this file: the percentage is produced by
+ * `calculateProbability` from the weights below, not typed in, and no source is
+ * named — these cards show a question, a domain and a result, which is the
+ * shape of the answer rather than a claim about any publication.
+ */
+export interface DemoExample {
+  id: string;
+  category: Category;
+  question: string;
+  brand: BrandKey;
+  outcomeLabel: string;
+  probability: number;
+  confidence: Confidence;
+  sourceCount: number;
+}
+
+/** A binary question, scored from a short list of `[strength, reliability, relevance, supportsYes]`. */
+function example(
+  id: string,
+  category: Category,
+  question: string,
+  brand: BrandKey,
+  outcomeLabel: string,
+  prior: number,
+  weights: [number, number, number, boolean][],
+): DemoExample {
+  const evidence: EvidenceItem[] = weights.map(([strength, reliability, relevance, yes], index) => ({
+    id: `${id}-${index}`,
+    title: "",
+    url: "",
+    sourceName: "",
+    publishedAt: new Date(DEMO_NOW.getTime() - (index + 2) * 86_400_000).toISOString().slice(0, 10),
+    summary: "",
+    supportsOutcomeId: yes ? "yes" : "no",
+    stance: yes ? "supports" : "opposes",
+    strength,
+    reliability,
+    relevance,
+  }));
+
+  const scored = calculateProbability(
+    [
+      { id: "yes", label: outcomeLabel },
+      { id: "no", label: "No" },
+    ],
+    [
+      { outcomeId: "yes", prior },
+      { outcomeId: "no", prior: 1 - prior },
+    ],
+    evidence,
+    DEMO_NOW,
+  );
+
+  const yesOutcome = scored.outcomes.find((outcome) => outcome.id === "yes");
+  return {
+    id,
+    category,
+    question,
+    brand,
+    outcomeLabel,
+    probability: yesOutcome?.probability ?? 0.5,
+    confidence: scored.confidence,
+    sourceCount: weights.length,
+  };
+}
+
+export const DEMO_EXAMPLES: DemoExample[] = [
+  example("world-cup", "Sports", "Will the holders reach the next World Cup semi-finals?", "fifa", "Yes", 0.42, [
+    [0.62, 0.9, 0.9, true],
+    [0.5, 0.78, 0.84, true],
+    [0.55, 0.85, 0.8, false],
+  ]),
+  example("samsung", "Technology", "Will Samsung ship a tri-fold phone next year?", "samsung", "Yes", 0.5, [
+    [0.7, 0.88, 0.92, true],
+    [0.58, 0.8, 0.86, true],
+    [0.44, 0.74, 0.78, false],
+  ]),
+  example("netflix", "Entertainment", "Will a Netflix film win Best Picture next year?", "netflix", "Yes", 0.3, [
+    [0.6, 0.86, 0.88, false],
+    [0.52, 0.8, 0.82, false],
+    [0.48, 0.76, 0.8, true],
+  ]),
+  example("tesla", "Business", "Will Tesla deliver more cars next year than this year?", "tesla", "Yes", 0.55, [
+    [0.66, 0.9, 0.9, true],
+    [0.5, 0.82, 0.85, true],
+    [0.46, 0.8, 0.8, false],
+  ]),
+  example("bitcoin", "Crypto", "Will Bitcoin reach $150k before the end of 2026?", "bitcoin", "Yes", 0.4, [
+    [0.58, 0.84, 0.88, false],
+    [0.5, 0.78, 0.82, true],
+    [0.46, 0.8, 0.8, false],
+  ]),
+  example("starship", "Science", "Will Starship carry a crew before the end of 2027?", "spacex", "Yes", 0.35, [
+    [0.68, 0.92, 0.92, false],
+    [0.54, 0.82, 0.86, false],
+    [0.5, 0.8, 0.84, true],
+  ]),
 ];

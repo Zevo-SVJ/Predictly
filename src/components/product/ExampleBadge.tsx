@@ -16,7 +16,7 @@ export function ExampleBadge({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="size-1 rounded-full bg-faint" aria-hidden />
+      <span className="size-1 rounded-full bg-border-strong" aria-hidden />
       Example forecast
     </span>
   );
@@ -30,7 +30,7 @@ export function ExampleBadge({ className }: { className?: string }) {
  */
 export function ExampleDisclosure({ className }: { className?: string }) {
   return (
-    <p className={cn("text-[12px] leading-relaxed text-faint", className)}>
+    <p className={cn("text-[12px] leading-relaxed text-muted", className)}>
       Illustrative product interface. Predictly has not researched this question
       and no source is being quoted — each row describes what an outlet covers,
       not what it published.

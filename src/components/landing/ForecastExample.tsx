@@ -19,13 +19,25 @@ export function ForecastExample() {
   return (
     <section className="section-y">
       <div className="container-page">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-center lg:gap-20">
+        <div className="max-w-2xl">
+          <p className="eyebrow">See the forecast</p>
+          <h2 className="mt-3 text-[length:var(--text-section)] font-semibold leading-[1.05]">
+            Every prediction starts with evidence.
+          </h2>
+          <p className="mt-5 text-[16px] leading-relaxed text-muted sm:text-[17px]">
+            This is the whole output: the question, the number, what it rests on,
+            and how sure Predictly is about it. Nothing is hidden behind a
+            summary.
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-center lg:gap-20">
           <Reveal>
             <div className="min-w-0">
               <ExampleBadge />
-              <h2 className="mt-4 text-[22px] font-semibold leading-[1.15] tracking-[-0.035em] sm:text-[30px]">
+              <h3 className="mt-4 text-[22px] font-semibold leading-[1.15] tracking-[-0.035em] sm:text-[30px]">
                 {DEMO_APPLE.question}
-              </h2>
+              </h3>
               <ForecastSummary forecast={DEMO_APPLE} className="mt-8 sm:mt-10" />
             </div>
           </Reveal>
@@ -40,7 +52,7 @@ export function ForecastExample() {
                     <SourceLogoTile brand={source.brand} />
                     <div className="min-w-0 flex-1">
                       <p className="text-[14px] font-medium text-ink">{source.name}</p>
-                      <p className="mt-0.5 truncate text-[12px] text-faint">{source.kind}</p>
+                      <p className="mt-0.5 truncate text-[12px] text-muted">{source.kind}</p>
                     </div>
                     <StanceChip stance={source.stance} />
                   </li>

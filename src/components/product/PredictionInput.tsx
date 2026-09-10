@@ -76,7 +76,7 @@ export function PredictionInput({
           "rounded-[var(--radius-lg)] border bg-white transition-all duration-200",
           focused
             ? "border-cobalt shadow-[0_0_0_4px_var(--color-cobalt-soft)]"
-            : "border-border-strong shadow-[var(--shadow-card)] hover:border-faint",
+            : "border-border-strong shadow-[var(--shadow-card)] hover:border-border-strong",
           large ? "p-3 sm:p-4" : "p-2.5",
         )}
       >
@@ -85,7 +85,7 @@ export function PredictionInput({
             className={cn(
               "mt-[0.35rem] shrink-0 transition-colors",
               large ? "size-[18px]" : "size-4",
-              focused ? "text-cobalt" : "text-faint",
+              focused ? "text-cobalt" : "text-muted",
             )}
             aria-hidden
           />
@@ -122,7 +122,7 @@ export function PredictionInput({
             aria-invalid={error ? true : undefined}
             className={cn(
               "block w-full resize-none bg-transparent py-1 leading-snug text-ink outline-none",
-              "placeholder:text-faint disabled:opacity-60",
+              "placeholder:text-muted disabled:opacity-60",
               // 16px floor: below it, iOS Safari zooms the page on focus and the
               // whole composition breaks on the devices most of this traffic
               // arrives from.
@@ -134,7 +134,7 @@ export function PredictionInput({
         {/* Full-width button on a phone — a 44px target beats a tidy inline row. */}
         <div className="mt-3 flex items-center justify-between gap-3">
           <span
-            className="font-mono text-[11px] tabular-nums text-faint transition-opacity duration-200"
+            className="font-mono text-[11px] tabular-nums text-muted transition-opacity duration-200"
             // Empty at rest: "0/240" under an untouched field reads as debug
             // output. aria-hidden while blank so it is not announced either.
             aria-hidden={question.length === 0}

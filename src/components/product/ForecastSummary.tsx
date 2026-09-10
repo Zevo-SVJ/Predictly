@@ -55,7 +55,7 @@ export function ForecastSummary({
             <span className="font-mono text-[13px] tabular-nums text-muted">
               {formatPercent(outcome.probability)}
             </span>
-            <span className="text-[13px] text-faint">{outcome.label}</span>
+            <span className="text-[13px] text-muted">{outcome.label}</span>
           </li>
         ))}
       </ul>

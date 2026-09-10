@@ -30,7 +30,7 @@ export function EventMeta({
       {items.map((item) => (
         <div key={item.label} className="flex items-center gap-1.5">
           <dt className="sr-only">{item.label}</dt>
-          <item.icon className="size-3.5 shrink-0 text-faint" aria-hidden />
+          <item.icon className="size-3.5 shrink-0 text-muted" aria-hidden />
           <dd className="text-[12.5px] text-muted">{item.label}</dd>
         </div>
       ))}
