@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/landing/Footer";
 import { LoginForm } from "@/components/LoginForm";
-import { Navbar } from "@/components/Navbar";
+import { Navbar } from "@/components/landing/Navbar";
 import { getCurrentUser } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";

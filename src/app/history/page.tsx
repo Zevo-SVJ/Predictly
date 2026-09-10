@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CircleSlash, CheckCircle2, XCircle } from "lucide-react";
-import { Footer } from "@/components/Footer";
-import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/landing/Footer";
+import { Navbar } from "@/components/landing/Navbar";
 import { isSupabaseConfigured } from "@/lib/config";
 import { getPredictionStore } from "@/lib/store";
 import { getCurrentUser } from "@/lib/supabase/server";
@@ -30,7 +30,7 @@ export default async function HistoryPage() {
         {isSupabaseConfigured() ? (
           <Link
             href="/login?next=/history"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-lime px-5 py-2.5 text-sm font-medium text-lime-ink transition-colors hover:bg-lime-dim"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-cobalt px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-cobalt-deep"
           >
             Sign in
             <ArrowRight className="size-4" aria-hidden />
@@ -55,13 +55,13 @@ export default async function HistoryPage() {
       {forecasts.length === 0 ? (
         <Link
           href="/predict"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-lime px-5 py-2.5 text-sm font-medium text-lime-ink transition-colors hover:bg-lime-dim"
+          className="mt-8 inline-flex items-center gap-2 rounded-full bg-cobalt px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-cobalt-deep"
         >
           Make your first prediction
           <ArrowRight className="size-4" aria-hidden />
         </Link>
       ) : (
-        <ul className="mt-10 divide-y divide-line border-y border-line">
+        <ul className="mt-10 divide-y divide-border border-y border-border">
           {forecasts.map((forecast) => (
             <HistoryRow key={forecast.id} forecast={forecast} />
           ))}
@@ -81,12 +81,12 @@ function HistoryRow({ forecast }: { forecast: ForecastResult }) {
         href={`/predict/${forecast.id}`}
         className="group flex items-center gap-5 py-5 sm:gap-8"
       >
-        <span className="w-16 shrink-0 text-2xl font-semibold tabular-nums tracking-tight text-lime sm:w-20 sm:text-3xl">
+        <span className="w-16 shrink-0 text-2xl font-semibold tabular-nums tracking-tight text-cobalt sm:w-20 sm:text-3xl">
           {formatPercent(forecast.probability)}
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[15px] font-medium text-fg group-hover:text-lime">
+          <span className="block truncate text-[15px] font-medium text-ink group-hover:text-cobalt">
             {forecast.question}
           </span>
           <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
@@ -107,8 +107,8 @@ function HistoryRow({ forecast }: { forecast: ForecastResult }) {
 function ResolutionChip({ forecast }: { forecast: ForecastResult }) {
   const config = {
     unresolved: { icon: null, label: "Open", className: "text-faint" },
-    correct: { icon: CheckCircle2, label: "Correct", className: "text-yes" },
-    wrong: { icon: XCircle, label: "Wrong", className: "text-no" },
+    correct: { icon: CheckCircle2, label: "Correct", className: "text-supports" },
+    wrong: { icon: XCircle, label: "Wrong", className: "text-counters" },
     cancelled: { icon: CircleSlash, label: "Cancelled", className: "text-muted" },
   }[forecast.resolutionStatus];
 

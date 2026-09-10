@@ -1,6 +1,4 @@
-"use client";
-
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import type { ForecastErrorCode } from "@/lib/types";
 
 /**
@@ -57,26 +55,32 @@ const COPY: Record<ForecastErrorCode, { title: string; body: string }> = {
   },
 };
 
+/**
+ * Copy only — no actions.
+ *
+ * The stage that renders this already offers both ways forward: a button back
+ * to the page, and the question itself sitting in an editable field below. A
+ * retry button here as well produced two controls with the same label in one
+ * view.
+ */
 export function PredictionError({
   code,
   message,
   hint,
-  onRetry,
 }: {
   code: ForecastErrorCode;
   message?: string;
   hint?: string;
-  onRetry: () => void;
 }) {
   const copy = COPY[code] ?? COPY.internal_error;
 
   return (
     <div className="mx-auto max-w-xl text-center">
-      <div className="mx-auto flex size-11 items-center justify-center rounded-full border border-line bg-surface">
+      <div className="mx-auto flex size-11 items-center justify-center rounded-full border border-border bg-canvas">
         <AlertTriangle className="size-5 text-hedge" aria-hidden />
       </div>
 
-      <h1 className="mt-6 text-2xl font-semibold leading-tight">{copy.title}</h1>
+      <h2 className="mt-6 text-xl font-semibold leading-tight">{copy.title}</h2>
       <p className="mt-3 text-[15px] leading-relaxed text-muted">{copy.body}</p>
 
       {hint ? <p className="mt-3 text-sm text-faint">{hint}</p> : null}
@@ -84,14 +88,6 @@ export function PredictionError({
         <p className="mt-4 font-mono text-xs text-faint">{message}</p>
       ) : null}
 
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-elevated"
-      >
-        <RotateCcw className="size-4" aria-hidden />
-        Ask something else
-      </button>
     </div>
   );
 }

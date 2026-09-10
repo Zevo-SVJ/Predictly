@@ -26,7 +26,7 @@ export function Logo({ className }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="20" cy="6" r="2.75" fill="var(--color-lime)" />
+      <circle cx="20" cy="6" r="2.75" fill="var(--color-cobalt)" />
     </svg>
   );
 }

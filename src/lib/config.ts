@@ -90,9 +90,9 @@ function resolveSiteUrl(): string {
 
 export const SITE = {
   name: "Predictly",
-  tagline: "Forecast What Happens Next",
+  tagline: "Predict what happens next",
   description:
-    "Ask about any future event. Predictly researches the latest information and gives you a probability-based forecast.",
+    "Ask about any real-world event that hasn't happened yet. Predictly researches the latest evidence, weighs every source it finds, and turns it into a probability.",
   /** Always a valid absolute URL with no trailing slash. Safe for `new URL()`. */
   url: resolveSiteUrl(),
 } as const;

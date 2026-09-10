@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { Footer } from "@/components/Footer";
-import { Navbar } from "@/components/Navbar";
-import { PredictionResult } from "@/components/PredictionResult";
-import { ShareCard } from "@/components/ShareCard";
+import { Footer } from "@/components/landing/Footer";
+import { Navbar } from "@/components/landing/Navbar";
+import { ForecastResult as ForecastResultView } from "@/components/ForecastResult";
+import { ShareForecast } from "@/components/ShareForecast";
 import { getPredictionStore } from "@/lib/store";
 import type { ForecastResult } from "@/lib/types";
 import { formatPercent } from "@/lib/utils";
@@ -51,22 +51,19 @@ export default async function ForecastPage({ params }: { params: Promise<{ id: s
   return (
     <>
       <Navbar />
-      <main id="main" className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-20">
-        <PredictionResult forecast={forecast} />
+      <main id="main" className="container-wide pb-16 pt-24 sm:pb-20 sm:pt-32">
+        <ForecastResultView forecast={forecast} />
 
-        {/* Screenshot-ready card. DOM-based on purpose — no image pipeline. */}
-        <section className="mx-auto mt-16 max-w-3xl border-t border-line pt-10">
-          <h2 className="text-[13px] uppercase tracking-[0.18em] text-faint">Share this forecast</h2>
-          <div className="mt-5 max-w-xl">
-            <ShareCard forecast={forecast} />
-          </div>
+        <section className="mt-14 border-t border-border pt-10 sm:mt-16">
+          <h2 className="eyebrow">Share this forecast</h2>
+          <ShareForecast forecast={forecast} className="mt-5" />
         </section>
 
-        <div className="mx-auto mt-14 max-w-3xl border-t border-line pt-8">
+        <div className="mt-14 border-t border-border pt-8">
           <p className="text-sm text-muted">Curious about something else?</p>
           <Link
             href="/predict"
-            className="mt-3 inline-flex items-center gap-2 rounded-full bg-lime px-5 py-2.5 text-sm font-medium text-lime-ink transition-colors hover:bg-lime-dim"
+            className="mt-3 inline-flex items-center gap-2 rounded-full bg-cobalt px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-cobalt-deep"
           >
             Make a prediction
             <ArrowRight className="size-4" aria-hidden />

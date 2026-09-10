@@ -22,8 +22,8 @@ export function LoginForm({ next = "/history" }: { next?: string }) {
 
   if (!supabase) {
     return (
-      <div className="rounded-card border border-line bg-surface p-5">
-        <p className="text-sm font-medium text-fg">Accounts aren&apos;t configured</p>
+      <div className="rounded-[var(--radius-md)] border border-border bg-canvas p-5">
+        <p className="text-sm font-medium text-ink">Accounts aren&apos;t configured</p>
         <p className="mt-2 text-sm leading-relaxed text-muted">
           Set <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
           <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to enable
@@ -77,13 +77,13 @@ export function LoginForm({ next = "/history" }: { next?: string }) {
 
   if (status === "sent") {
     return (
-      <div className="rounded-card border border-line bg-surface p-5">
-        <p className="flex items-center gap-2 text-sm font-medium text-lime">
+      <div className="rounded-[var(--radius-md)] border border-border bg-canvas p-5">
+        <p className="flex items-center gap-2 text-sm font-medium text-cobalt">
           <Check className="size-4" aria-hidden />
           Check your inbox
         </p>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          We sent a sign-in link to <span className="text-fg">{email}</span>. Open it on this
+          We sent a sign-in link to <span className="text-ink">{email}</span>. Open it on this
           device to finish.
         </p>
       </div>
@@ -105,12 +105,12 @@ export function LoginForm({ next = "/history" }: { next?: string }) {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
-          className="w-full rounded-full border border-line-strong bg-elevated px-5 py-3 text-[15px] text-fg outline-none transition-colors focus:border-lime/50"
+          className="w-full rounded-full border border-border-strong bg-white px-5 py-3 text-[15px] text-ink outline-none transition-colors focus:border-cobalt"
         />
         <button
           type="submit"
           disabled={status === "sending"}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-5 py-3 text-sm font-medium text-lime-ink transition-colors hover:bg-lime-dim disabled:opacity-70"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cobalt px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-cobalt-deep disabled:opacity-70"
         >
           {status === "sending" ? (
             <Loader2 className="size-4 animate-spin" aria-hidden />
@@ -130,14 +130,14 @@ export function LoginForm({ next = "/history" }: { next?: string }) {
       <button
         type="button"
         onClick={handleGoogle}
-        className="inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-line-strong px-5 py-3 text-sm font-medium text-fg transition-colors hover:bg-elevated"
+        className="inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-border-strong bg-white px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-canvas"
       >
         <GoogleMark />
         Continue with Google
       </button>
 
       {message ? (
-        <p role="alert" className="text-sm text-no">
+        <p role="alert" className="text-sm text-counters">
           {message}
         </p>
       ) : null}

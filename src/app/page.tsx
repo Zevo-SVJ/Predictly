@@ -1,65 +1,63 @@
-import { Discover } from "@/components/Discover";
-import { Faq } from "@/components/Faq";
-import { Feedback } from "@/components/Feedback";
-import { FinalCta } from "@/components/FinalCta";
-import { Footer } from "@/components/Footer";
-import { ForecastMoment } from "@/components/ForecastMoment";
-import { Hero } from "@/components/Hero";
-import { HowItWorks } from "@/components/HowItWorks";
 import { LandingViewTracker } from "@/components/LandingViewTracker";
-import { LiveDemo } from "@/components/LiveDemo";
-import { Navbar } from "@/components/Navbar";
-import { OnTheRadar } from "@/components/OnTheRadar";
-import { PredictField } from "@/components/PredictField";
-import { ResearchLayer } from "@/components/ResearchLayer";
-import { WhyUse } from "@/components/WhyUse";
-import { SITE } from "@/lib/config";
-import { getTrendingEvents } from "@/lib/trending";
+import { PredictionStage } from "@/components/PredictionStage";
+import { Comparison } from "@/components/landing/Comparison";
+import { FAQ } from "@/components/landing/FAQ";
+import { FinalCTA } from "@/components/landing/FinalCTA";
+import { Footer } from "@/components/landing/Footer";
+import { ForecastExample } from "@/components/landing/ForecastExample";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { InAction } from "@/components/landing/InAction";
+import { Navbar } from "@/components/landing/Navbar";
+import { ResearchDemo } from "@/components/landing/ResearchDemo";
+import { Reviews } from "@/components/landing/Reviews";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata = {
-  title: `${SITE.name} — Predict what happens next.`,
+  title: "Predictly — Predict what happens next",
   description:
-    "Ask about a future event. Predictly researches what's happening now and turns the evidence into a forecast.",
+    "Ask about any real-world event that hasn't happened yet. Predictly researches the latest evidence, weighs every source it finds, and turns it into a probability.",
   alternates: { canonical: "/" },
+  openGraph: {
+    title: "Predictly — Predict what happens next",
+    description:
+      "Ask about a future event. Predictly researches the evidence and turns it into a probability you can check.",
+    url: "/",
+  },
 };
 
 /**
- * The page answers, in order: what is this, what can I ask it, what does using
- * it look like, where does the number come from, why should I trust it, why
- * would I use it, how does it work, what else is here, what do I still want to
- * know, and what do I do now.
+ * The landing page.
  *
- * The rhythm alternates on purpose — atmosphere, a fast full-bleed rail, an
- * interactive canvas, the real product, a dense research table, a large figure,
- * editorial blocks, a ruled diagram, a feed, prose, and the invitation — so no
- * two adjacent sections share a shape.
+ * `PredictionStage` is the hero and also the whole flow: submitting a question
+ * does not navigate anywhere, it turns this page into the forecast. Everything
+ * passed as children below is what a visitor sees *before* they ask, and it is
+ * unmounted the moment they do.
  *
- * `Feedback` renders nothing until real feedback exists.
+ * The order is one argument told once, and the shapes deliberately alternate so
+ * no two adjacent sections read the same way: the product itself, then the
+ * research behind it on a tinted band, then its result set directly on white
+ * with no card at all, then the four steps as one bordered strip, then the
+ * whole thing again on a live event, then the honest state of our social proof,
+ * a comparison, the objections, and the same input the page opened with.
  */
 export default function HomePage() {
-  // One question for the demo: a single prominent example at a time.
-  const demoQuestion = getTrendingEvents().slice(0, 1);
-
   return (
     <>
       <LandingViewTracker />
       <Navbar />
 
       <main id="main">
-        <Hero />
-        <OnTheRadar />
-        <PredictField />
-        <LiveDemo questions={demoQuestion} />
-        <ResearchLayer />
-        <ForecastMoment />
-        <WhyUse />
-        <HowItWorks />
-        <Discover />
-        <Feedback />
-        <Faq />
-        <FinalCta />
+        <PredictionStage>
+          <ResearchDemo />
+          <ForecastExample />
+          <HowItWorks />
+          <InAction />
+          <Reviews />
+          <Comparison />
+          <FAQ />
+          <FinalCTA />
+        </PredictionStage>
       </main>
 
       <Footer />
