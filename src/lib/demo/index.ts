@@ -1,4 +1,5 @@
 import { calculateProbability } from "@/lib/forecast/probability";
+import type { BrandKey } from "@/components/marketing/brandAssets";
 import type { Category, Confidence, EvidenceItem, Outcome, Stance } from "@/lib/types";
 
 /**
@@ -28,18 +29,12 @@ import type { Category, Confidence, EvidenceItem, Outcome, Stance } from "@/lib/
  */
 const DEMO_NOW = new Date("2026-09-10T00:00:00.000Z");
 
-/** Keys resolved to real SVG marks by `SourceLogo`. */
-export type BrandKey =
-  | "apple"
-  | "f1"
-  | "mclaren"
-  | "redbull"
-  | "guardian"
-  | "nyt"
-  | "cnn"
-  | "arstechnica"
-  | "techcrunch"
-  | "dazn";
+/**
+ * Brand marks come from one registry so the demo data and the marketing page
+ * can never disagree about which logos exist. Type-only, so nothing in `lib`
+ * takes a runtime dependency on a component.
+ */
+export type { BrandKey } from "@/components/marketing/brandAssets";
 
 export interface DemoSource {
   id: string;
@@ -319,3 +314,102 @@ export const DEMO_QUESTIONS: { question: string; brand?: BrandKey }[] = [
 ];
 
 
+
+/**
+ * Six one-line examples for the examples grid.
+ *
+ * Same rules as everything else in this file: each percentage comes out of
+ * `calculateProbability` from the weights below rather than being typed in, and
+ * no source is named — a card shows a question, a domain and a result, which is
+ * the shape of an answer rather than a claim about any publication.
+ */
+export interface DemoExample {
+  id: string;
+  category: Category;
+  question: string;
+  brand: BrandKey;
+  outcomeLabel: string;
+  probability: number;
+  confidence: Confidence;
+}
+
+/** A binary question, scored from `[strength, reliability, relevance, supportsYes]` rows. */
+function example(
+  id: string,
+  category: Category,
+  question: string,
+  brand: BrandKey,
+  outcomeLabel: string,
+  prior: number,
+  weights: [number, number, number, boolean][],
+): DemoExample {
+  const evidence: EvidenceItem[] = weights.map(([strength, reliability, relevance, yes], index) => ({
+    id: `${id}-${index}`,
+    title: "",
+    url: "",
+    sourceName: "",
+    publishedAt: new Date(DEMO_NOW.getTime() - (index + 2) * 86_400_000).toISOString().slice(0, 10),
+    summary: "",
+    supportsOutcomeId: yes ? "yes" : "no",
+    stance: yes ? "supports" : "opposes",
+    strength,
+    reliability,
+    relevance,
+  }));
+
+  const scored = calculateProbability(
+    [
+      { id: "yes", label: outcomeLabel },
+      { id: "no", label: "No" },
+    ],
+    [
+      { outcomeId: "yes", prior },
+      { outcomeId: "no", prior: 1 - prior },
+    ],
+    evidence,
+    DEMO_NOW,
+  );
+
+  return {
+    id,
+    category,
+    question,
+    brand,
+    outcomeLabel,
+    probability: scored.outcomes.find((outcome) => outcome.id === "yes")?.probability ?? 0.5,
+    confidence: scored.confidence,
+  };
+}
+
+export const DEMO_EXAMPLES: DemoExample[] = [
+  example("f1", "Sports", "Who will win the next F1 race?", "mclaren", "Lando Norris", 0.3, [
+    [0.68, 0.92, 0.94, true],
+    [0.56, 0.82, 0.88, true],
+    [0.5, 0.84, 0.82, false],
+  ]),
+  example("apple", "Technology", "Will Apple release a foldable iPhone in 2027?", "apple", "Yes", 0.52, [
+    [0.68, 0.93, 0.94, true],
+    [0.62, 0.85, 0.89, true],
+    [0.66, 0.9, 0.76, false],
+  ]),
+  example("ucl", "Sports", "Who wins the next Champions League?", "fifa", "A Premier League club", 0.34, [
+    [0.6, 0.88, 0.9, true],
+    [0.52, 0.8, 0.84, true],
+    [0.55, 0.86, 0.8, false],
+  ]),
+  example("bitcoin", "Crypto", "Will Bitcoin reach $150k before the end of 2026?", "bitcoin", "Yes", 0.4, [
+    [0.58, 0.84, 0.88, false],
+    [0.5, 0.78, 0.82, true],
+    [0.46, 0.8, 0.8, false],
+  ]),
+  example("oscars", "Entertainment", "Will a streaming film win Best Picture next year?", "imdb", "Yes", 0.3, [
+    [0.6, 0.86, 0.88, false],
+    [0.52, 0.8, 0.82, false],
+    [0.48, 0.76, 0.8, true],
+  ]),
+  example("starship", "Science", "Will Starship carry a crew before the end of 2027?", "spacex", "Yes", 0.35, [
+    [0.68, 0.92, 0.92, false],
+    [0.54, 0.82, 0.86, false],
+    [0.5, 0.8, 0.84, true],
+  ]),
+];

@@ -335,30 +335,68 @@
     display: none;
   }
 
-  /* The underline is part of the wordmark, not an effect: it appears drawn. */
-  .animate-underline {
+  /* The bar stays; only the highlight crossing it stops. */
+  .animate-shine {
     animation: none !important;
-    stroke-dashoffset: 0 !important;
+    opacity: 0 !important;
+  }
+
+  .animate-orb-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 
 /*
- * The hero underline draws itself once, left to right. The path length is set
- * in the component so this works for any stroke.
+ * The hero underline's shine.
+ *
+ * A highlight crosses the bar once every several seconds and is invisible the
+ * rest of the time — the idle stretch is most of the cycle on purpose. A
+ * constant sweep reads as a loading state; an occasional one reads as a
+ * material catching the light. Translation is in the SVG's own user units, so
+ * it scales with the bar rather than against its bounding box.
  */
-@keyframes underline-draw {
-  from {
-    stroke-dashoffset: var(--underline-length);
+@keyframes underline-shine {
+  0%,
+  58% {
+    transform: translateX(-70px);
+    opacity: 0;
   }
-  to {
-    stroke-dashoffset: 0;
+  62% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  94%,
+  100% {
+    transform: translateX(215px);
+    opacity: 0;
   }
 }
 
-.animate-underline {
-  stroke-dasharray: var(--underline-length);
-  stroke-dashoffset: var(--underline-length);
-  animation: underline-draw 0.9s var(--ease-out-expo) 0.35s forwards;
+.animate-shine {
+  animation: underline-shine 7.5s cubic-bezier(0.4, 0, 0.2, 1) 1.8s infinite;
+}
+
+/*
+ * Brand marks arriving. Staggered per orb from an inline delay, and quick —
+ * the whole cluster should land in well under a second.
+ */
+@keyframes orb-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-orb-in {
+  animation: orb-in 0.42s var(--ease-out-expo) both;
 }
 
 /* Fades the rail into the page at both ends rather than cutting it off. */

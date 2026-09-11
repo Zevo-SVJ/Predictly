@@ -11,18 +11,21 @@ export function Footer() {
         </div>
 
         <nav aria-label="Footer" className="flex flex-wrap gap-x-7 gap-y-2 text-[13.5px]">
-          <Link href="/predict" className="inline-flex min-h-9 items-center text-muted transition-colors hover:text-ink">
-            Predict
-          </Link>
-          <Link href="/#how-it-works" className="inline-flex min-h-9 items-center text-muted transition-colors hover:text-ink">
-            How it works
-          </Link>
-          <Link href="/history" className="inline-flex min-h-9 items-center text-muted transition-colors hover:text-ink">
-            History
-          </Link>
-          <Link href="/#faq" className="inline-flex min-h-9 items-center text-muted transition-colors hover:text-ink">
-            FAQ
-          </Link>
+          {[
+            { href: "/predict", label: "Predict" },
+            { href: "/#how-it-works", label: "How it works" },
+            { href: "/#examples", label: "Examples" },
+            { href: "/history", label: "History" },
+            { href: "/#faq", label: "FAQ" },
+          ].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="inline-flex min-h-9 items-center text-muted transition-colors hover:text-ink"
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
       </div>
 

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { PredictionStage } from "@/components/PredictionStage";
-import { Footer } from "@/components/landing/Footer";
-import { Navbar } from "@/components/landing/Navbar";
+import { Footer } from "@/components/marketing/Footer";
+import { MarketingNav } from "@/components/marketing/MarketingNav";
 
 export const metadata = {
   title: "Make a prediction",
@@ -25,7 +25,7 @@ export default async function PredictPage({
 
   return (
     <>
-      <Navbar />
+      <MarketingNav />
       <main id="main">
         <Suspense fallback={null}>
           {/* Keyed by the question so arriving with a new ?q= starts a fresh run. */}

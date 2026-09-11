@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { Footer } from "@/components/landing/Footer";
+import { Footer } from "@/components/marketing/Footer";
 import { LoginForm } from "@/components/LoginForm";
-import { Navbar } from "@/components/landing/Navbar";
+import { MarketingNav } from "@/components/marketing/MarketingNav";
 import { getCurrentUser } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +27,7 @@ export default async function LoginPage({
 
   return (
     <>
-      <Navbar />
+      <MarketingNav />
       <main id="main" className="mx-auto min-h-[70vh] max-w-md px-4 py-16 sm:px-6 sm:py-24">
         <h1 className="text-3xl font-semibold leading-tight">Save your forecasts</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-muted">

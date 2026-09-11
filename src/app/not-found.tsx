@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Footer } from "@/components/landing/Footer";
-import { Navbar } from "@/components/landing/Navbar";
+import { Footer } from "@/components/marketing/Footer";
+import { MarketingNav } from "@/components/marketing/MarketingNav";
 
 export default function NotFound() {
   return (
     <>
-      <Navbar />
+      <MarketingNav />
       <main id="main" className="mx-auto flex min-h-[60vh] max-w-lg flex-col justify-center px-4 py-20 sm:px-6">
         <p className="font-mono text-xs uppercase tracking-widest text-muted">404</p>
         <h1 className="mt-4 text-3xl font-semibold leading-tight sm:text-4xl">

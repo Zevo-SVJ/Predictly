@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CircleSlash, CheckCircle2, XCircle } from "lucide-react";
-import { Footer } from "@/components/landing/Footer";
-import { Navbar } from "@/components/landing/Navbar";
+import { Footer } from "@/components/marketing/Footer";
+import { MarketingNav } from "@/components/marketing/MarketingNav";
 import { isSupabaseConfigured } from "@/lib/config";
 import { getPredictionStore } from "@/lib/store";
 import { getCurrentUser } from "@/lib/supabase/server";
@@ -124,7 +124,7 @@ function ResolutionChip({ forecast }: { forecast: ForecastResult }) {
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Navbar />
+      <MarketingNav />
       <main id="main" className="mx-auto min-h-[60vh] max-w-3xl px-4 py-12 sm:px-6 sm:py-20">
         {children}
       </main>

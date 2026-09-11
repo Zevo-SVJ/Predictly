@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { Footer } from "@/components/landing/Footer";
-import { Navbar } from "@/components/landing/Navbar";
+import { Footer } from "@/components/marketing/Footer";
+import { MarketingNav } from "@/components/marketing/MarketingNav";
 import { ForecastResult as ForecastResultView } from "@/components/ForecastResult";
 import { ShareForecast } from "@/components/ShareForecast";
 import { getPredictionStore } from "@/lib/store";
@@ -50,7 +50,7 @@ export default async function ForecastPage({ params }: { params: Promise<{ id: s
 
   return (
     <>
-      <Navbar />
+      <MarketingNav />
       <main id="main" className="container-page pb-16 pt-24 sm:pb-20 sm:pt-32">
         <ForecastResultView forecast={forecast} />
 

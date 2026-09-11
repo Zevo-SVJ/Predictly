@@ -13,7 +13,7 @@ import {
 import { ForecastResult as ForecastResultView } from "./ForecastResult";
 import { PredictionError } from "./PredictionError";
 import { ShareForecast } from "./ShareForecast";
-import { Hero } from "./landing/Hero";
+import { Hero } from "./marketing/Hero";
 import { PredictionInput } from "./product/PredictionInput";
 import { ResearchProgress } from "./product/ResearchProgress";
 import { track } from "@/lib/analytics";
