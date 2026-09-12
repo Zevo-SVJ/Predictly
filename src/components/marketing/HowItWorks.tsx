@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import type { ReactNode } from "react";
-import { LogoOrb } from "./BrandLogo";
+import { SourceGather } from "./SourceGather";
 import { SectionHeader } from "./SectionHeader";
 import { Reveal } from "../Reveal";
 import { DEMO_APPLE } from "@/lib/demo";
@@ -41,13 +41,10 @@ const STEPS: { id: string; step: string; title: string; body: string; visual: Re
     title: "Predictly reads the open web.",
     body: "It searches, follows what it finds and reads the article text rather than a snippet. The same story under three URLs collapses into one source.",
     visual: (
-      <ul className="flex flex-wrap items-start justify-center gap-4 sm:gap-5">
-        {DEMO_APPLE.sources.map((source, index) => (
-          <li key={source.id}>
-            <LogoOrb brand={source.brand} size="md" label={source.name} delayMs={index * 70} />
-          </li>
-        ))}
-      </ul>
+      <SourceGather
+        question="Who will win the next F1 race?"
+        rows={[["redbull", "f1", "ferrari"], ["guardian", "dazn"]]}
+      />
     ),
   },
   {

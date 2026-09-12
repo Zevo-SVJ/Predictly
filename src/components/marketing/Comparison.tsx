@@ -1,84 +1,80 @@
-import { Check, Minus } from "lucide-react";
+import { Check, Minus, X } from "lucide-react";
 import { SectionHeader } from "./SectionHeader";
 import { cn } from "@/lib/utils";
 
 type Mark = "yes" | "partial" | "no";
 
+const COLUMNS = [
+  { id: "predictly", label: "Predictly", highlight: true },
+  { id: "ai", label: "Generic AI", highlight: false },
+  { id: "search", label: "Search", highlight: false },
+] as const;
+
 /**
- * Predictly against the thing it is most often confused with.
+ * Predictly against the two things it actually gets confused with.
  *
- * Two columns rather than four, and the second is "asking a chatbot" rather
- * than a blanket "other tools" — a column that scored every alternative at
- * nothing would be a strawman, and the rows below would stop being checkable.
- * A chatbot genuinely does some of this, so it is marked as doing some of it.
+ * Honest columns, not a strawman: a chatbot genuinely researches sometimes and
+ * will state a probability, and a search engine genuinely surfaces current
+ * sources. Marking either at nothing across the board would make the Predictly
+ * column unverifiable by association.
  *
- * Every Predictly row is something the code actually does: research through a
- * live provider, evidence stored per source, a deterministic probability, named
- * sources on the result, a separate confidence score, and forecasts persisted
- * against an account.
+ * Every Predictly row is something the code does: research through a live
+ * provider, evidence stored per source, a deterministic probability, the full
+ * outcome distribution, forecasts persisted with a resolution field, and a
+ * pipeline whose first step is establishing that the event hasn't happened yet.
  */
-const ROWS: { id: string; label: string; predictly: Mark; chatbot: Mark; note: string }[] = [
+const ROWS: { id: string; label: string; marks: Record<string, Mark> }[] = [
   {
     id: "research",
-    label: "Searches the web when you ask",
-    predictly: "yes",
-    chatbot: "partial",
-    note: "Only when it decides to, and rarely for the exact question.",
+    label: "Researches current sources",
+    marks: { predictly: "yes", ai: "partial", search: "yes" },
   },
   {
     id: "evidence",
-    label: "Shows the evidence it used",
-    predictly: "yes",
-    chatbot: "partial",
-    note: "Cites sometimes; the citation may not be what moved the answer.",
+    label: "Shows supporting evidence",
+    marks: { predictly: "yes", ai: "partial", search: "partial" },
   },
   {
     id: "probability",
-    label: "Returns a probability",
-    predictly: "yes",
-    chatbot: "partial",
-    note: "Will state a number, but not the arithmetic behind it.",
+    label: "Produces explicit probabilities",
+    marks: { predictly: "yes", ai: "partial", search: "no" },
   },
   {
-    id: "attribution",
-    label: "Names every source behind the number",
-    predictly: "yes",
-    chatbot: "no",
-    note: "",
+    id: "outcomes",
+    label: "Shows competing outcomes",
+    marks: { predictly: "yes", ai: "no", search: "no" },
   },
   {
-    id: "confidence",
-    label: "Separates confidence from probability",
-    predictly: "yes",
-    chatbot: "no",
-    note: "",
+    id: "tracking",
+    label: "Tracks forecasts to check later",
+    marks: { predictly: "yes", ai: "no", search: "no" },
   },
   {
-    id: "saved",
-    label: "Keeps the forecast to check later",
-    predictly: "yes",
-    chatbot: "no",
-    note: "",
+    id: "future",
+    label: "Built specifically for future events",
+    marks: { predictly: "yes", ai: "no", search: "no" },
   },
 ];
 
-function MarkCell({ mark, className }: { mark: Mark; className?: string }) {
-  const config = {
-    yes: { Icon: Check, label: "Yes", tone: "bg-cobalt text-white" },
-    partial: { Icon: Minus, label: "Partly", tone: "bg-hedge-soft text-hedge" },
-    no: { Icon: Minus, label: "No", tone: "bg-canvas text-muted" },
-  }[mark];
+const MARKS = {
+  yes: { Icon: Check, label: "Yes", tone: "bg-cobalt text-white" },
+  partial: { Icon: Minus, label: "Partly", tone: "bg-hedge-soft text-hedge" },
+  no: { Icon: X, label: "No", tone: "bg-canvas text-muted" },
+} as const;
 
+function MarkCell({ mark, srLabel }: { mark: Mark; srLabel: string }) {
+  const config = MARKS[mark];
   return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
+    <span className="inline-flex items-center gap-2">
       <span
-        className={cn("flex size-6 items-center justify-center rounded-full", config.tone)}
+        className={cn("flex size-6 shrink-0 items-center justify-center rounded-full", config.tone)}
         aria-hidden
       >
         <config.Icon className="size-3.5" strokeWidth={2.6} />
       </span>
       {/* The word travels with the shape, so the answer never rests on colour. */}
       <span className="text-[13px] text-muted">{config.label}</span>
+      <span className="sr-only">{srLabel}</span>
     </span>
   );
 }
@@ -87,45 +83,61 @@ export function Comparison() {
   return (
     <section id="compare" className="section-y scroll-mt-28 bg-canvas">
       <div className="container-page">
-        <SectionHeader eyebrow="How we compare" title="How Predictly compares to just asking.">
-          A chatbot will happily give you a number. What it will not give you is
-          the evidence that produced it, or a way to check it later.
+        <SectionHeader
+          eyebrow="How we compare"
+          title="How Predictly compares to other ways of finding answers."
+        >
+          A search engine hands you documents. A chatbot gives a number without
+          the arithmetic. Neither was built to tell you how likely something is.
         </SectionHeader>
 
-        <div className="surface mx-auto mt-14 max-w-3xl overflow-hidden px-6 py-8 sm:mt-20 sm:px-10 sm:py-10">
-          <div className="hidden grid-cols-[1.6fr_1fr_1fr] gap-4 border-b border-border pb-5 sm:grid">
+        <div className="surface mx-auto mt-14 max-w-4xl overflow-hidden px-6 py-8 sm:mt-20 sm:px-10 sm:py-10">
+          <div className="hidden grid-cols-[1.5fr_repeat(3,1fr)] gap-4 border-b border-border pb-5 md:grid">
             <span className="label">Capability</span>
-            <span className="text-[13.5px] font-semibold text-cobalt">Predictly</span>
-            <span className="text-[13.5px] font-semibold text-muted">Asking a chatbot</span>
+            {COLUMNS.map((column) => (
+              <span
+                key={column.id}
+                className={cn(
+                  "text-[13.5px] font-semibold",
+                  column.highlight ? "text-cobalt" : "text-muted",
+                )}
+              >
+                {column.label}
+              </span>
+            ))}
           </div>
 
           <ul className="divide-y divide-border">
             {ROWS.map((row) => (
               <li
                 key={row.id}
-                className="grid gap-3 py-6 sm:grid-cols-[1.6fr_1fr_1fr] sm:items-center sm:gap-4"
+                className="grid gap-3 py-6 md:grid-cols-[1.5fr_repeat(3,1fr)] md:items-center md:gap-4"
               >
-                <p className="text-[16px] leading-snug text-ink sm:text-[15.5px]">{row.label}</p>
+                <p className="text-[16px] leading-snug text-ink md:text-[15.5px]">{row.label}</p>
 
-                {/* Mobile keeps the two answers side by side under the
-                    capability; four-column grids at 375px only survive by
+                {/* On a phone the three answers sit as labelled tiles under the
+                    capability. Four columns at 375px can only survive by
                     scrolling sideways or shrinking past readability. */}
-                <div className="grid grid-cols-2 gap-3 sm:contents">
-                  <div className="rounded-[var(--radius-sm)] bg-cobalt-soft px-3 py-2.5 sm:bg-transparent sm:p-0">
-                    <span className="mb-1.5 block text-[11px] font-semibold text-cobalt sm:sr-only">
-                      Predictly
-                    </span>
-                    <MarkCell mark={row.predictly} />
-                  </div>
-                  <div className="rounded-[var(--radius-sm)] bg-canvas px-3 py-2.5 sm:bg-transparent sm:p-0">
-                    <span className="mb-1.5 block text-[11px] text-muted sm:sr-only">Chatbot</span>
-                    <MarkCell mark={row.chatbot} />
-                    {row.note ? (
-                      <span className="mt-1.5 block text-[12px] leading-snug text-muted sm:mt-1">
-                        {row.note}
+                <div className="grid grid-cols-3 gap-2 md:contents">
+                  {COLUMNS.map((column) => (
+                    <div
+                      key={column.id}
+                      className={cn(
+                        "min-w-0 rounded-[var(--radius-sm)] px-3 py-2.5 md:bg-transparent md:p-0",
+                        column.highlight ? "bg-cobalt-soft" : "bg-canvas",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "mb-1.5 block truncate text-[11px] md:sr-only",
+                          column.highlight ? "font-semibold text-cobalt" : "text-muted",
+                        )}
+                      >
+                        {column.label}
                       </span>
-                    ) : null}
-                  </div>
+                      <MarkCell mark={row.marks[column.id] ?? "no"} srLabel={column.label} />
+                    </div>
+                  ))}
                 </div>
               </li>
             ))}

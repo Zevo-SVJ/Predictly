@@ -34,10 +34,10 @@ export function FinalCTA() {
             <Logo className="size-7" />
           </span>
 
-          <p className="eyebrow mt-8">Get started</p>
+          <p className="eyebrow mt-8">Make your prediction</p>
 
           <h2 className="mt-6 text-[length:var(--text-section)] font-semibold leading-[1.04] tracking-[-0.04em]">
-            Know what&rsquo;s likely before it happens.
+            See what happens next.
           </h2>
 
           <p className="mx-auto mt-6 max-w-md text-[17px] leading-relaxed text-muted">

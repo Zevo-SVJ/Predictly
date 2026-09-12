@@ -402,14 +402,59 @@ export const DEMO_EXAMPLES: DemoExample[] = [
     [0.5, 0.78, 0.82, true],
     [0.46, 0.8, 0.8, false],
   ]),
-  example("oscars", "Entertainment", "Will a streaming film win Best Picture next year?", "imdb", "Yes", 0.3, [
-    [0.6, 0.86, 0.88, false],
-    [0.52, 0.8, 0.82, false],
-    [0.48, 0.76, 0.8, true],
+  example("ballondor", "Sports", "Who will win the 2026 Ballon d'Or?", "guardian", "The current favourite", 0.32, [
+    [0.62, 0.88, 0.9, true],
+    [0.54, 0.82, 0.86, true],
+    [0.5, 0.84, 0.8, false],
   ]),
-  example("starship", "Science", "Will Starship carry a crew before the end of 2027?", "spacex", "Yes", 0.35, [
-    [0.68, 0.92, 0.92, false],
-    [0.54, 0.82, 0.86, false],
-    [0.5, 0.8, 0.84, true],
+  example("election", "Politics", "Will the incumbent party hold the next French presidential election?", "nyt", "Yes", 0.36, [
+    [0.6, 0.9, 0.9, false],
+    [0.5, 0.84, 0.84, false],
+    [0.52, 0.82, 0.8, true],
   ]),
 ];
+
+/**
+ * The Apple forecast, recomputed after each source is added.
+ *
+ * Not an illustration of the idea that evidence moves a number — it is the
+ * number moving. Each step runs `calculateProbability` over one more source
+ * than the last, so the sequence below is what the engine actually does as
+ * research comes in, starting from the structural base rate alone.
+ */
+export interface LadderStep {
+  /** The source folded in at this step, or null for the starting base rate. */
+  source: DemoSource | null;
+  probability: number;
+  /** Change in percentage points from the previous step. */
+  delta: number;
+}
+
+function ladder(forecast: DemoForecast, priors: { outcomeId: string; prior: number }[]): LadderStep[] {
+  const outcomes = forecast.outcomeMeta.map((meta) => ({ id: meta.id, label: meta.label }));
+  const supports: Record<string, string | null> = { apple: "yes", arstechnica: "yes", techcrunch: "yes", nyt: "no", cnn: null };
+  const strengths: Record<string, number> = { apple: 0.68, arstechnica: 0.62, techcrunch: 0.52, nyt: 0.66, cnn: 0.3 };
+
+  const steps: LadderStep[] = [];
+  let previous = calculateProbability(outcomes, priors, [], DEMO_NOW).outcomes
+    .find((outcome) => outcome.id === "yes")?.probability ?? 0.5;
+  steps.push({ source: null, probability: previous, delta: 0 });
+
+  for (let count = 1; count <= forecast.sources.length; count += 1) {
+    const slice = forecast.sources.slice(0, count);
+    const scored = calculateProbability(outcomes, priors, toEvidence(slice, supports, strengths), DEMO_NOW);
+    const value = scored.outcomes.find((outcome) => outcome.id === "yes")?.probability ?? previous;
+    steps.push({
+      source: forecast.sources[count - 1] ?? null,
+      probability: value,
+      delta: Math.round((value - previous) * 100),
+    });
+    previous = value;
+  }
+  return steps;
+}
+
+export const DEMO_APPLE_LADDER = ladder(DEMO_APPLE, [
+  { outcomeId: "yes", prior: 0.52 },
+  { outcomeId: "no", prior: 0.48 },
+]);

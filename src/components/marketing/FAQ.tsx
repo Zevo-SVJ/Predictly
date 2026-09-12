@@ -13,20 +13,20 @@ import { SectionHeader } from "./SectionHeader";
  */
 const ENTRIES = [
   {
-    q: "How does Predictly make a forecast?",
+    q: "How does Predictly calculate probabilities?",
     a: "It restates your question as an event that can be settled, searches the web for it, reads what it finds, and scores each source on four things: which outcome it points to and how strongly, how reliable the publisher is, how relevant it is to your exact question, and how recently it was written. Those scores multiply into one weight per source, and the weights are aggregated against a base rate. The arithmetic is deterministic — the same evidence produces the same number every time.",
   },
   {
-    q: "Where does Predictly get its evidence?",
+    q: "Where does Predictly get its research?",
     a: "From the live web, at the moment you ask. There is no cached answer waiting. It follows what it finds and reads the actual article text rather than a search snippet, and ten reprints of one wire story collapse into a single source rather than counting ten times.",
   },
   {
-    q: "Can I ask any question?",
-    a: "Anything that will clearly either happen or not, and that the web is currently writing about — a title race, a launch, an election, a release date, an approval, a price threshold. If a question is too vague to ever be settled, or the research comes back too thin to stand behind, Predictly says so instead of producing a number for it.",
+    q: "Can I make a prediction without signing up?",
+    a: "Yes. Ask, watch the research run and read the whole result — every source, every weight — without an account. Signing in exists only so the forecasts you want to keep stay in one place and can be checked later against what actually happened.",
   },
   {
-    q: "How accurate are Predictly forecasts?",
-    a: "We don't publish an accuracy figure, because not enough forecasts have resolved for one to mean anything yet. Quoting a number now would be marketing rather than measurement. Every forecast is stored with a resolution field from the first day, so when there is a real track record it will be counted rather than claimed.",
+    q: "How current is the research?",
+    a: "It runs at the moment you ask — there is no cached answer waiting. Each source's publication date feeds into its weight, so older material still counts but counts less, and a forecast resting entirely on old evidence is capped at medium confidence however unanimous it is.",
   },
   {
     q: "Does Predictly guarantee an outcome?",
@@ -34,7 +34,7 @@ const ENTRIES = [
   },
   {
     q: "Can I save my predictions?",
-    a: "Yes. You can ask, watch the research run and read the result without an account; signing in exists so the forecasts you want to keep stay in one place and can be checked against what actually happened. A saved forecast gets a shareable link, and it isn't listed publicly unless you share it yourself.",
+    a: "Yes, against an account. A saved forecast keeps its sources and its number, gets a shareable link, and carries a resolution field so it can be marked right or wrong once the event settles. It isn't listed publicly unless you share the link yourself.",
   },
 ];
 

@@ -42,7 +42,12 @@ export function PredictionVisual({
                 {outcome.brand ? (
                   <LogoOrb brand={outcome.brand} size="sm" delayMs={index * 70} />
                 ) : (
-                  <span className="size-11 shrink-0" />
+                  <span
+                    className="flex size-11 shrink-0 items-center justify-center rounded-full border border-dashed border-border-strong"
+                    aria-hidden
+                  >
+                    <span className="h-px w-3 bg-border-strong" />
+                  </span>
                 )}
                 <span className="min-w-0 flex-1 truncate">
                   <span

@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { HeroUnderline } from "./HeroUnderline";
+import { HeroForecastVisual } from "./HeroForecastVisual";
 import { PredictionInput } from "../product/PredictionInput";
 
 /**
@@ -21,7 +22,8 @@ export function Hero({ onSubmit }: { onSubmit: (question: string) => void }) {
   const [asking, setAsking] = useState(false);
 
   return (
-    <div className="mx-auto max-w-3xl text-center">
+    <div>
+      <div className="mx-auto max-w-3xl text-center">
       <p className="eyebrow">Predictly</p>
 
       <h1 className="mt-7 text-[length:var(--text-hero)] font-semibold leading-[1.0] tracking-[-0.045em]">
@@ -68,9 +70,12 @@ export function Hero({ onSubmit }: { onSubmit: (question: string) => void }) {
 
       {/* The mechanism, not a metric. Nothing here is a number we would have
           had to measure. */}
-      <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.14em] text-muted sm:text-[12.5px] sm:tracking-[0.18em]">
-        Web research · Evidence · Probability
-      </p>
+        <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.14em] text-muted sm:text-[12.5px] sm:tracking-[0.18em]">
+          Web research · Evidence · Probability
+        </p>
+      </div>
+
+      <HeroForecastVisual className="mx-auto mt-16 max-w-[34rem] sm:mt-20 lg:max-w-[62rem]" />
     </div>
   );
 }

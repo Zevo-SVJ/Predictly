@@ -38,7 +38,10 @@ export function HeroUnderline({
         preserveAspectRatio="none"
         aria-hidden
         focusable="false"
-        className="pointer-events-none absolute inset-x-0 -bottom-[0.07em] h-[0.15em] w-full"
+        // Thickness is clamped rather than purely relative: at 0.085em the rule
+        // is 3px under a 40px phone headline and 7.5px under an 88px desktop one,
+        // and the second reads as a marker stripe rather than a rule.
+        className="pointer-events-none absolute inset-x-0 -bottom-[0.05em] h-[clamp(3px,0.062em,5px)] w-full"
       >
         <defs>
           <linearGradient id={shineId} x1="0" x2="1" y1="0" y2="0">

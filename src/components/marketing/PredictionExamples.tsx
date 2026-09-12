@@ -67,6 +67,10 @@ export function PredictionExamples() {
                         {item.outcomeLabel}
                       </span>
                     </span>
+                    <span className="mt-3 block text-[12.5px] text-muted">
+                      Confidence{" "}
+                      <span className="font-semibold capitalize text-ink">{item.confidence}</span>
+                    </span>
                     <span className="mt-4 flex items-center gap-1.5 text-[13px] text-muted transition-colors group-hover:text-cobalt">
                       Forecast this
                       <ArrowUpRight

@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { EvidenceVisual } from "./EvidenceVisual";
+import { EvidenceLadder } from "./EvidenceLadder";
+import { SourceGather } from "./SourceGather";
 import { PredictionVisual } from "./PredictionVisual";
-import { SourceCluster } from "./SourceCluster";
+import { SectionHeader } from "./SectionHeader";
 import { Reveal } from "../Reveal";
-import { DEMO_APPLE, DEMO_RACE } from "@/lib/demo";
+import { DEMO_RACE } from "@/lib/demo";
 
 /**
  * Three cards, three ideas, one each.
@@ -19,25 +20,17 @@ const CARDS: { id: string; title: string; body: string; visual: ReactNode }[] = 
     title: "Research every angle",
     body: "Predictly searches the open web for your exact question and reads what it finds — official sources, reporting, and the places an answer actually surfaces first.",
     visual: (
-      <SourceCluster
-        question="Will Apple release a foldable iPhone in 2027?"
-        above={["apple", "arstechnica", "techcrunch"]}
-        below={["nyt", "cnn", "guardian"]}
+      <SourceGather
+        question="Will Apple ship a foldable iPhone in 2027?"
+        rows={[["nyt", "techcrunch", "arstechnica"], ["guardian", "apple"]]}
       />
     ),
   },
   {
     id: "evidence",
     title: "Evidence moves the number",
-    body: "Every source is scored on its own before any probability exists — how relevant it is, how much the publisher is worth, and which way it points.",
-    visual: (
-      <EvidenceVisual
-        probability={DEMO_APPLE.probability}
-        verdict="Likely"
-        supporting={["apple", "arstechnica", "techcrunch"]}
-        against={["nyt"]}
-      />
-    ),
+    body: "Every source is scored on its own, then folded in. The fourth one here points the other way and takes six points off — that is the engine, not a story about it.",
+    visual: <EvidenceLadder />,
   },
   {
     id: "forecast",
@@ -61,7 +54,12 @@ export function FeatureCards() {
   return (
     <section className="section-y">
       <div className="container-page">
-        <ul className="mx-auto grid max-w-xl gap-5 lg:max-w-none lg:grid-cols-3 lg:gap-6">
+        <SectionHeader
+          eyebrow="Research. Evidence. Forecast."
+          title="Everything you need to see what happens next."
+        />
+
+        <ul className="mx-auto mt-14 grid max-w-xl gap-5 sm:mt-20 lg:max-w-none lg:grid-cols-3 lg:gap-6">
           {CARDS.map((card, index) => (
             <li key={card.id} className="h-full">
               <Reveal delay={index * 0.06} className="h-full">
